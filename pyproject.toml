@@ -1,0 +1,20 @@
+[project]
+name = "pure-ab-3d-mot"
+version = "0.1.0"
+description = "The gist of the the AB3DMOT (a base-line 3D multiple-object tracker)."
+readme = "README.md"
+authors = [
+    { name = "Peter Koval", email = "koval.peter@gmail.com" }
+]
+requires-python = ">=3.13.7"
+dependencies = [
+    "filterpy>=1.4.5",
+    "scipy>=1.16.1",
+]
+
+[project.scripts]
+pure-ab-3d-mot = "pure_ab_3d_mot:main"
+
+[build-system]
+requires = ["uv_build>=0.8.12,<0.9.0"]
+build-backend = "uv_build"
