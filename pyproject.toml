@@ -1,7 +1,7 @@
 [project]
 name = "pure-ab-3d-mot"
 version = "0.1.0"
-description = "The gist of the the AB3DMOT (a base-line 3D multiple-object tracker)."
+description = "The gist of the the AB3DMOT (a base-line of 3D multiple-object tracking)."
 readme = "README.md"
 authors = [
     { name = "Peter Koval", email = "koval.peter@gmail.com" }
