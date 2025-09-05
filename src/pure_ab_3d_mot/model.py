@@ -7,6 +7,7 @@ import copy
 from .box import Box3D
 from .matching import data_association
 from .kalman_filter import KF
+from .process_dets import process_dets
 
 
 def within_range(theta):
@@ -39,19 +40,6 @@ def orientation_correction(self, theta_pre, theta_obs):
             theta_pre -= np.pi * 2
 
     return theta_pre, theta_obs
-
-
-def process_dets(dets):
-    # convert each detection into the class Box3D
-    # inputs:
-    # 	dets - a numpy array of detections in the format [[h,w,l,x,y,z,theta],...]
-
-    dets_new = []
-    for det in dets:
-        det_tmp = Box3D.array2bbox_raw(det)
-        dets_new.append(det_tmp)
-
-    return dets_new
 
 
 # A Baseline of 3D Multi-Object Tracking
@@ -156,15 +144,10 @@ class AB3DMOT(object):
 
         NOTE: The number of objects returned may differ from the number of detections provided.
         """
-        dets, info = dets_all['dets'], dets_all['info']  # dets: N x 7, float numpy array
         self.frame_count += 1
 
-        # recall the last frames of outputs for computing ID correspondences during affinity processing
-        self.id_past_output = copy.copy(self.id_now_output)
-        self.id_past = [trk.id for trk in self.trackers]
-
-        # process detection format
-        dets = process_dets(dets)
+        dets, info = dets_all['dets'], dets_all['info']  # dets: N x 7, float numpy array
+        dets = process_dets(dets) # process detection format
 
         # tracks propagation based on velocity
         trks = self.prediction()

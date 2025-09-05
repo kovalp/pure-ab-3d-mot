@@ -14,8 +14,8 @@ class Box3D:
         self.s = s  # detection score
         self.corners_3d_cam = None
 
-    def __str__(self):
-        return 'x: {}, y: {}, z: {}, heading: {}, length: {}, width: {}, height: {}, score: {}'.format(
+    def __repr__(self) -> str:
+        return 'Box3D(pose {} {} {} {} size {} {} {} score {})'.format(
             self.x, self.y, self.z, self.ry, self.l, self.w, self.h, self.s)
 
     @classmethod
