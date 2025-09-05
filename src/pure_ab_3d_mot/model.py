@@ -63,7 +63,6 @@ class AB3DMOT(object):
         self.frame_count = 0
         self.id_now_output = []
         self.ego_com = False  # ego motion compensation
-        self.affi_process = True
         self.ID_count = [1]
         self.algm = 'hungar'
         self.metric = 'giou_3d'

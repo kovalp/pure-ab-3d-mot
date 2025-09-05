@@ -1,20 +1,32 @@
 [project]
 name = "pure-ab-3d-mot"
 version = "0.1.0"
-description = "The gist of the the AB3DMOT (a base-line of 3D multiple-object tracking)."
+description = "The gist of the AB3DMOT (a base-line of 3D multiple-object tracking)."
 readme = "README.md"
 authors = [
+    { name = "Xinshuo Weng", email = "xinshuo.weng@gmail.com" }
+]
+maintainers = [
     { name = "Peter Koval", email = "koval.peter@gmail.com" }
 ]
-requires-python = ">=3.13.7"
+
+requires-python = ">=3.8"
 dependencies = [
     "filterpy>=1.4.5",
-    "scipy>=1.16.1",
+    "scipy>=1.10.1",
 ]
 
-[project.scripts]
-pure-ab-3d-mot = "pure_ab_3d_mot:main"
+[tool.uv]
+package = true
+
+[dependency-groups]
+dev = [
+    "bump-my-version>=1.2.1",
+    "pytest>=8.3.5",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.12.12",
+]
 
 [build-system]
-requires = ["uv_build>=0.8.12,<0.9.0"]
-build-backend = "uv_build"
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
