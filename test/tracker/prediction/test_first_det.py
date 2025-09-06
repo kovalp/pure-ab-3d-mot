@@ -7,4 +7,3 @@ def test_first_det(tracker: Ab3DMot) -> None:
     """."""
     tracker.prediction()
     assert len(tracker.trackers) == 0
-

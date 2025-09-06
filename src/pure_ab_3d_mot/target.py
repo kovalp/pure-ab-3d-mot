@@ -18,32 +18,39 @@ class Target:
         # constant velocity model: x' = x + dx, y' = y + dy, z' = z + dz
         # while all others (theta, l, w, h, dx, dy, dz) remain the same
         self.kf.F = np.array(
-            [[1, 0, 0, 0, 0, 0, 0, 1, 0, 0],  # state transition matrix, dim_x * dim_x
-             [0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
-             [0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-             [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-             [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]])
+            [
+                [1, 0, 0, 0, 0, 0, 0, 1, 0, 0],  # state transition matrix, dim_x * dim_x
+                [0, 1, 0, 0, 0, 0, 0, 0, 1, 0],
+                [0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+                [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            ]
+        )
 
         # measurement function, dim_z * dim_x, the first 7 dimensions of the measurement correspond to the state
-        self.kf.H = np.array([[1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                              [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                              [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-                              [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-                              [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-                              [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-                              [0, 0, 0, 0, 0, 0, 1, 0, 0, 0]])
+        self.kf.H = np.array(
+            [
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+            ]
+        )
 
         # measurement uncertainty, uncomment if not super trust the measurement data due to detection noise
         # self.kf.R[0:,0:] *= 10.
 
         # initial state uncertainty at time 0
         # Given a single data, the initial velocity is very uncertain, so giv a high uncertainty to start
-        self.kf.P[7:, 7:] *= 1000.
+        self.kf.P[7:, 7:] *= 1000.0
         self.kf.P *= 10.0
 
         # process uncertainty, make the constant velocity part more certain
@@ -57,8 +64,7 @@ class Target:
         return f'Target(id {self.id} state {self.kf.x.reshape(-1)} info {self.info})'
 
     def compute_innovation_matrix(self):
-        """ compute the innovation matrix for association with mahalanobis distance
-        """
+        """compute the innovation matrix for association with mahalanobis distance"""
         return np.matmul(np.matmul(self.kf.H, self.kf.P), self.kf.H.T) + self.kf.R
 
     def get_velocity(self):
