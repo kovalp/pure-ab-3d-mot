@@ -107,15 +107,13 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
         NOTE: The number of objects returned may differ from the number of detections provided.
         """
         self.frame_count += 1
-
-        dets, info = dets_all['dets'], dets_all['info']  # dets: N x 7, float numpy array
-        self.prediction()  # tracks propagation based on constant-velocity Kalman filter
+        self.prediction()  # tracks (targets) propagation with constant-velocity Kalman filter.
 
         # matching
         trk_innovation_mat = None
         if self.metric == 'm_dis':
             trk_innovation_mat = [trk.compute_innovation_matrix() for trk in self.trackers]
-        det_boxes = process_dets(dets) # process detection format
+        det_boxes = process_dets(dets_all['dets']) # process detection format
         matched, unmatched_dets, unmatched_trks, cost, affi = \
             data_association(det_boxes,
                              self.get_target_boxes(),
@@ -124,10 +122,9 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
                              self.algm,
                              trk_innovation_mat)
 
+        info = dets_all['info']
         self.update(matched, unmatched_trks, det_boxes, info)
-
-        # create and initialise new trackers for unmatched detections
-        self.birth(det_boxes, info, unmatched_dets)
+        self.birth(det_boxes, info, unmatched_dets)  # create and initialise new trackers for unmatched detections
 
         # output existing valid tracks
         results = self.output()

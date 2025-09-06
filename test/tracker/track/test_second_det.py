@@ -17,3 +17,4 @@ def test_second_det(tracker: Ab3DMot, det_reports1: Dict) -> None:
     assert results[0] == pytest.approx(np.array(ref0))
     assert len(tracker.trackers) == 1
     assert tracker.id_now_output == pytest.approx([1.0])
+    assert tracker.frame_count == 2
