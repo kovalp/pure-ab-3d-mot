@@ -1,3 +1,6 @@
+"""."""
+
+from typing import Tuple
 import numpy as np
 from .kitti_oxts import roty
 
@@ -39,7 +42,7 @@ class Box3D:
             return np.array([bbox.h, bbox.w, bbox.l, bbox.x, bbox.y, bbox.z, bbox.ry, bbox.s])
 
     @classmethod
-    def array2bbox_raw(cls, data):
+    def array2bbox_raw(cls, data: Tuple[float, float, float, float, float, float, float]):
         # take the format of data of [h,w,l,x,y,z,theta]
 
         bbox = Box3D()

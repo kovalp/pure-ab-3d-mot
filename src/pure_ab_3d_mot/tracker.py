@@ -2,52 +2,21 @@
 # email: xinshuo.weng@gmail.com
 # Refactored by <"Peter Koval" koval.peter@gmail.com> 2025
 
+from typing import List
 import numpy as np
 import copy
 from .box import Box3D
 from .matching import data_association
-from .kalman_filter import KF
+from .target import Target
+from .orientation_correction import within_range, orientation_correction
 from .process_dets import process_dets
 
 
-def within_range(theta):
-    # make sure the orientation is within a proper range
-
-    if theta >= np.pi: theta -= np.pi * 2  # make the theta still in the range
-    if theta < -np.pi: theta += np.pi * 2
-
-    return theta
-
-
-def orientation_correction(self, theta_pre, theta_obs):
-    # update orientation in propagated tracks and detected boxes so that they are within 90 degree
-
-    # make the theta still in the range
-    theta_pre = within_range(theta_pre)
-    theta_obs = within_range(theta_obs)
-
-    # if the angle of two theta is not acute angle, then make it acute
-    if abs(theta_obs - theta_pre) > np.pi / 2.0 and abs(
-            theta_obs - theta_pre) < np.pi * 3 / 2.0:
-        theta_pre += np.pi
-        theta_pre = within_range(theta_pre)
-
-    # now the angle is acute: < 90 or > 270, convert the case of > 270 to < 90
-    if abs(theta_obs - theta_pre) >= np.pi * 3 / 2.0:
-        if theta_obs > 0:
-            theta_pre += np.pi * 2
-        else:
-            theta_pre -= np.pi * 2
-
-    return theta_pre, theta_obs
-
-
-# A Baseline of 3D Multi-Object Tracking
-class AB3DMOT(object):
+class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
     """."""
-
     def __init__(self) -> None:
-        self.trackers = []
+        """."""
+        self.trackers: List[Target] = []
         self.frame_count = 0
         self.id_now_output = []
         self.ego_com = False  # ego motion compensation
@@ -59,20 +28,6 @@ class AB3DMOT(object):
         self.max_age = 2
         self.min_sim = -1.0
         self.max_sim = 1.0
-
-    def prediction(self):
-        # get predicted locations from existing tracks
-        trks = []
-        for t in range(len(self.trackers)):
-            # propagate locations
-            kf_tmp = self.trackers[t]
-            kf_tmp.kf.predict()
-            kf_tmp.kf.x[3] = within_range(kf_tmp.kf.x[3])
-            # update statistics
-            kf_tmp.time_since_update += 1
-            trk_tmp = kf_tmp.kf.x.reshape((-1))[:7]
-            trks.append(Box3D.array2bbox(trk_tmp))
-        return trks
 
     def update(self, matched, unmatched_trks, dets, info):
         # update matched trackers with assigned detections
@@ -95,13 +50,13 @@ class AB3DMOT(object):
                 trk.kf.x[3] = within_range(trk.kf.x[3])
                 trk.info = info[d, :][0]
 
-    def birth(self, dets, info, unmatched_dets):
+    def birth(self, dets, info, unmatched_dets: List[int]) -> List[int]:
         # create and initialise new trackers for unmatched detections
 
         # dets = copy.copy(dets)
         new_id_list = list()  # new ID generated for unmatched detections
         for i in unmatched_dets:  # a scalar of index
-            trk = KF(Box3D.bbox2array(dets[i]), info[i, :], self.ID_count[0])
+            trk = Target(Box3D.bbox2array(dets[i]), info[i, :], self.ID_count[0])
             self.trackers.append(trk)
             new_id_list.append(trk.id)
             # print('track ID %s has been initialized due to new detection' % trk.id)
@@ -132,6 +87,13 @@ class AB3DMOT(object):
 
         return results
 
+    def prediction(self) -> None:
+        # get predicted locations from existing tracks
+        for track in self.trackers:
+            track.kf.predict()                           # propagate locations
+            track.kf.x[3] = within_range(track.kf.x[3])  # correct the yaw angle
+            track.time_since_update += 1                 # update statistics
+
     def track(self, dets_all):
         """
         Params:
@@ -147,22 +109,25 @@ class AB3DMOT(object):
         self.frame_count += 1
 
         dets, info = dets_all['dets'], dets_all['info']  # dets: N x 7, float numpy array
-        dets = process_dets(dets) # process detection format
-
-        # tracks propagation based on velocity
-        trks = self.prediction()
+        self.prediction()  # tracks propagation based on constant-velocity Kalman filter
 
         # matching
-        trk_innovation_matrix = None
+        trk_innovation_mat = None
         if self.metric == 'm_dis':
-            trk_innovation_matrix = [trk.compute_innovation_matrix() for trk in self.trackers]
+            trk_innovation_mat = [trk.compute_innovation_matrix() for trk in self.trackers]
+        det_boxes = process_dets(dets) # process detection format
         matched, unmatched_dets, unmatched_trks, cost, affi = \
-            data_association(dets, trks, self.metric, self.thres, self.algm, trk_innovation_matrix)
+            data_association(det_boxes,
+                             self.get_target_boxes(),
+                             self.metric,
+                             self.thres,
+                             self.algm,
+                             trk_innovation_mat)
 
-        self.update(matched, unmatched_trks, dets, info)
+        self.update(matched, unmatched_trks, det_boxes, info)
 
         # create and initialise new trackers for unmatched detections
-        self.birth(dets, info, unmatched_dets)
+        self.birth(det_boxes, info, unmatched_dets)
 
         # output existing valid tracks
         results = self.output()
@@ -170,6 +135,9 @@ class AB3DMOT(object):
             results = [np.concatenate(results)]  # h,w,l,x,y,z,theta, ID, other info, confidence
         else:
             results = [np.empty((0, 15))]
-        self.id_now_output = results[0][:, 7].tolist()  # only the active tracks that are outputed
-
+        self.id_now_output = results[0][:, 7].tolist()  # only the active tracks that are output
         return results
+
+    def get_target_boxes(self) -> List[Box3D]:
+        """."""
+        return [Box3D.array2bbox(trk.kf.x[:7, 0]) for trk in self.trackers]
