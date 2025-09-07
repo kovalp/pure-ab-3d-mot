@@ -1,6 +1,6 @@
 """."""
 
-from typing import List
+from typing import List, Union
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
@@ -10,7 +10,8 @@ from .box import Box3D
 
 
 def compute_affinity(
-    dets: List[Box3D], trks: List[Box3D], metric: MetricKind, trk_inv_inn_matrices: List[np.ndarray] = None
+    dets: List[Box3D], trks: List[Box3D], metric: MetricKind,
+        trk_inv_inn_matrices: List[Union[None, np.ndarray]] = None
 ) -> np.ndarray:
     # compute affinity matrix
     assert isinstance(metric, MetricKind)
@@ -21,7 +22,7 @@ def compute_affinity(
             # choose to use different distance metrics
             if 'iou' in metric.value:
                 dist_now = iou(det, trk, metric)
-            elif metric == 'm_dis':
+            elif metric == metric.MAHALANOBIS_DIST:
                 dist_now = -m_distance(det, trk, trk_inv_inn_matrices[t])
             elif metric == 'euler':
                 dist_now = -m_distance(det, trk, None)
@@ -67,7 +68,7 @@ def greedy_matching(cost_matrix):
 def data_association(
     dets: List[Box3D],
     trks: List[Box3D],
-    metric: str,
+    metric: MetricKind,
     threshold: float,
     algm: str = 'greedy',
     trk_innovation_matrix=None,

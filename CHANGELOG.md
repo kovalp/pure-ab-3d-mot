@@ -13,3 +13,5 @@
   - Introduced `MetricKind` enumerable.
   - Added a tolerance `1e-4` to the `inside` internal function.
   - Moved the functions related to IOU to a separate module.
+  - Tested the `Target` class.
+  - Tested the Mahalanobis association metric.
