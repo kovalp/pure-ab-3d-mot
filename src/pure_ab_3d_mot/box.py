@@ -15,7 +15,6 @@ class Box3D:
         self.l = l  # length
         self.ry = ry  # orientation
         self.s = s  # detection score
-        self.corners_3d_cam = None
 
     def __repr__(self) -> str:
         return 'Box3D(pose {} {} {} {} size {} {} {} score {})'.format(
@@ -68,7 +67,7 @@ def box2corners3d_camcoord(bbox: Box3D) -> np.ndarray:
        with right x, down y, front z
 
         Returns:
-            corners_3d: (8,3) array in in rect camera coord
+            corners_3d: (8,3) array in rect camera coord
 
         box corner order is like follows
                 1 -------- 0         top is bottom because y direction is negative
@@ -84,11 +83,6 @@ def box2corners3d_camcoord(bbox: Box3D) -> np.ndarray:
 
         x -> w, z -> l, y -> h
     """
-
-    # if already computed before, then skip it
-    if bbox.corners_3d_cam is not None:
-        return bbox.corners_3d_cam
-
     # 3d bounding box dimensions
     l, w, h = bbox.l, bbox.w, bbox.h
 
@@ -105,7 +99,4 @@ def box2corners3d_camcoord(bbox: Box3D) -> np.ndarray:
     corners_3d[0, :] = corners_3d[0, :] + bbox.x
     corners_3d[1, :] = corners_3d[1, :] + bbox.y
     corners_3d[2, :] = corners_3d[2, :] + bbox.z
-    corners_3d = np.transpose(corners_3d)
-    bbox.corners_3d_cam = corners_3d
-
-    return corners_3d
+    return np.transpose(corners_3d)

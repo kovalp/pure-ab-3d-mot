@@ -9,9 +9,8 @@ from .iou import iou
 from .box import Box3D
 
 
-def compute_affinity(
-    dets: List[Box3D], trks: List[Box3D], metric: MetricKind,
-        trk_inv_inn_matrices: List[Union[None, np.ndarray]] = None
+def compute_affinity(dets: List[Box3D], trks: List[Box3D], metric: MetricKind,
+                     trk_inv_inn_matrices: List[np.ndarray] = None
 ) -> np.ndarray:
     # compute affinity matrix
     assert isinstance(metric, MetricKind)
@@ -19,19 +18,17 @@ def compute_affinity(
     aff_matrix = np.zeros((len(dets), len(trks)), dtype=np.float32)
     for d, det in enumerate(dets):
         for t, trk in enumerate(trks):
-            # choose to use different distance metrics
-            if 'iou' in metric.value:
+            if metric in (metric.IOU_3D, metric.GIOU_3D, metric.IOU_2D, metric.GIOU_2D):
                 dist_now = iou(det, trk, metric)
             elif metric == metric.MAHALANOBIS_DIST:
                 dist_now = -m_distance(det, trk, trk_inv_inn_matrices[t])
-            elif metric == 'euler':
-                dist_now = -m_distance(det, trk, None)
-            elif metric == 'dist_2d':
+            elif metric == metric.EULER:
+                dist_now = -m_distance(det, trk)
+            elif metric == metric.DIST_2D:
                 dist_now = -dist_ground(det, trk)
-            elif metric == 'dist_3d':
+            elif metric == metric.DIST_3D:
                 dist_now = -dist3d(det, trk)
-            else:
-                assert False, 'error'
+
             aff_matrix[d, t] = dist_now
 
     return aff_matrix

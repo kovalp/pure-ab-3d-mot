@@ -1,12 +1,11 @@
+"""."""
 from typing import List, Optional, Tuple, Union
 
 import numpy as np
-
 from scipy.spatial import ConvexHull
 
 from pure_ab_3d_mot.box import Box3D, box2corners3d_camcoord
 from pure_ab_3d_mot.dist_metrics import MetricKind
-
 
 Poly2DT = Union[List[Tuple[float, float]], np.ndarray]
 
