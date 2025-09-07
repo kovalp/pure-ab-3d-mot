@@ -15,3 +15,6 @@
   - Moved the functions related to IOU to a separate module.
   - Tested the `Target` class.
   - Tested the Mahalanobis association metric.
+  - Cease storing the corners of the bounding box in the objects `BBox3D`.
+  - Test the rest of the association metrics.
+

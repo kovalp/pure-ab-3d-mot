@@ -16,44 +16,26 @@ class MetricKind(Enum):
     IOU_2D = 'iou_2d'
     GIOU_2D = 'giou_2d'
     MAHALANOBIS_DIST = 'm_dis'
+    EULER = 'euler'
+    DIST_2D = 'dist_2d'
+    DIST_3D = 'dist_3d'
 
 
-#################### distance metric
-
-
-def dist_ground(bbox1, bbox2):
+def dist_ground(bbox1: Box3D, bbox2: Box3D) -> float:
     # Compute distance of bottom center in 3D space, NOT considering the difference in height
-
     c1 = Box3D.bbox2array(bbox1)[[0, 2]]
     c2 = Box3D.bbox2array(bbox2)[[0, 2]]
-    dist = np.linalg.norm(c1 - c2)
-
-    return dist
+    return np.linalg.norm(c1 - c2)
 
 
-def dist3d_bottom(bbox1, bbox2):
-    # Compute distance of bottom center in 3D space, considering the difference in height / 2
-
-    c1 = Box3D.bbox2array(bbox1)[:3]
-    c2 = Box3D.bbox2array(bbox2)[:3]
-    dist = np.linalg.norm(c1 - c2)
-
-    return dist
-
-
-def dist3d(bbox1, bbox2):
+def dist3d(bbox1: Box3D, bbox2: Box3D) -> float:
     # Compute distance of actual center in 3D space, considering the difference in height
-
-    corners1 = box2corners3d_camcoord(bbox1)  # 8 x 3
-    corners2 = box2corners3d_camcoord(bbox2)  # 8 x 3
-
     # compute center point based on 8 corners
+    corners1 = box2corners3d_camcoord(bbox1)
+    corners2 = box2corners3d_camcoord(bbox2)
     c1 = np.average(corners1, axis=0)
     c2 = np.average(corners2, axis=0)
-
-    dist = np.linalg.norm(c1 - c2)
-
-    return dist
+    return np.linalg.norm(c1 - c2)
 
 
 def diff_orientation_correction(diff: float) -> float:
@@ -75,7 +57,7 @@ def m_distance(det, trk, trk_inv_innovation_matrix=None) -> float:
     diff = np.expand_dims(det_array - trk_array, axis=1)  # 7 x 1
 
     # correct orientation
-    corrected_yaw_diff = diff_orientation_correction(diff[3])
+    corrected_yaw_diff = diff_orientation_correction(float(diff[3]))
     diff[3] = corrected_yaw_diff
 
     if trk_inv_innovation_matrix is not None:
