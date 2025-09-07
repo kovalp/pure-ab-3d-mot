@@ -4,18 +4,22 @@ from typing import List
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
-from .dist_metrics import iou, dist3d, dist_ground, m_distance
+from .dist_metrics import dist3d, dist_ground, m_distance, MetricKind
+from .iou import iou
 from .box import Box3D
 
 
-def compute_affinity(dets, trks, metric, trk_inv_inn_matrices=None):
+def compute_affinity(
+    dets: List[Box3D], trks: List[Box3D], metric: MetricKind, trk_inv_inn_matrices: List[np.ndarray] = None
+) -> np.ndarray:
     # compute affinity matrix
+    assert isinstance(metric, MetricKind)
 
     aff_matrix = np.zeros((len(dets), len(trks)), dtype=np.float32)
     for d, det in enumerate(dets):
         for t, trk in enumerate(trks):
             # choose to use different distance metrics
-            if 'iou' in metric:
+            if 'iou' in metric.value:
                 dist_now = iou(det, trk, metric)
             elif metric == 'm_dis':
                 dist_now = -m_distance(det, trk, trk_inv_inn_matrices[t])
@@ -66,7 +70,7 @@ def data_association(
     metric: str,
     threshold: float,
     algm: str = 'greedy',
-    trk_innovation_matrix=None
+    trk_innovation_matrix=None,
 ):
     """
     Assigns detections to tracked object

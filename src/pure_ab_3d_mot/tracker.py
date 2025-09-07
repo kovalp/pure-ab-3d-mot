@@ -2,14 +2,18 @@
 # email: xinshuo.weng@gmail.com
 # Refactored by <"Peter Koval" koval.peter@gmail.com> 2025
 
-from typing import List
-import numpy as np
 import copy
+
+from typing import List
+
+import numpy as np
+
 from .box import Box3D
+from .dist_metrics import MetricKind
 from .matching import data_association
-from .target import Target
-from .orientation_correction import within_range, orientation_correction
+from .orientation_correction import orientation_correction, within_range
 from .process_dets import process_dets
+from .target import Target
 
 
 class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
@@ -21,9 +25,9 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
         self.id_now_output = []
         self.ego_com = False  # ego motion compensation
         self.ID_count = [1]
-        self.algm = 'hungar'
-        self.metric = 'giou_3d'
-        self.thres = -0.2
+        self.algorithm = 'hungar'
+        self.metric = MetricKind.GIOU_3D
+        self.threshold = -0.2
         self.min_hits = 3
         self.max_age = 2
         self.min_sim = -1.0
@@ -118,8 +122,8 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
             data_association(det_boxes,
                              self.get_target_boxes(),
                              self.metric,
-                             self.thres,
-                             self.algm,
+                             self.threshold,
+                             self.algorithm,
                              trk_innovation_mat)
 
         info = dets_all['info']

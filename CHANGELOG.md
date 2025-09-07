@@ -10,3 +10,6 @@
   - Added typehints in several methods and functions.
   - Convert some static methods to pure functions.
   - Added `scipy-stubs` dependency for `python > 3.9`.
+  - Introduced `MetricKind` enumerable.
+  - Added a tolerance `1e-4` to the `inside` internal function.
+  - Moved the functions related to IOU to a separate module.
