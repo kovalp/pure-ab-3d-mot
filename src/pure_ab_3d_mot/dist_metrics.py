@@ -4,6 +4,8 @@ from enum import Enum
 
 import numpy as np
 
+import math
+
 from .box import Box3D, box2corners3d_camcoord
 
 
@@ -13,6 +15,7 @@ class MetricKind(Enum):
     GIOU_3D = 'giou_3d'
     IOU_2D = 'iou_2d'
     GIOU_2D = 'giou_2d'
+    MAHALANOBIS_DIST = 'm_dis'
 
 
 #################### distance metric
@@ -53,7 +56,7 @@ def dist3d(bbox1, bbox2):
     return dist
 
 
-def diff_orientation_correction(diff):
+def diff_orientation_correction(diff: float) -> float:
     """
     return the angle diff = det - trk
     if angle diff > 90 or < -90, rotate trk and update the angle diff
@@ -65,7 +68,7 @@ def diff_orientation_correction(diff):
     return diff
 
 
-def m_distance(det, trk, trk_inv_innovation_matrix=None):
+def m_distance(det, trk, trk_inv_innovation_matrix=None) -> float:
     # compute difference
     det_array = Box3D.bbox2array(det)[:7]
     trk_array = Box3D.bbox2array(trk)[:7]  # (7, )
@@ -76,7 +79,7 @@ def m_distance(det, trk, trk_inv_innovation_matrix=None):
     diff[3] = corrected_yaw_diff
 
     if trk_inv_innovation_matrix is not None:
-        dist = np.sqrt(np.matmul(np.matmul(diff.T, trk_inv_innovation_matrix), diff)[0][0])
+        sqr = np.dot(diff.T, trk_inv_innovation_matrix.dot(diff))[0, 0]
     else:
-        dist = np.sqrt(np.dot(diff.T, diff))  # distance along 7 dimension
-    return dist
+        sqr = np.dot(diff.T, diff)[0, 0]  # distance along 7 dimension
+    return float(math.sqrt(sqr))

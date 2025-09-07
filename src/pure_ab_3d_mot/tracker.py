@@ -115,7 +115,7 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
 
         # matching
         trk_innovation_mat = None
-        if self.metric == 'm_dis':
+        if self.metric == MetricKind.MAHALANOBIS_DIST:
             trk_innovation_mat = [trk.compute_innovation_matrix() for trk in self.trackers]
         det_boxes = process_dets(dets_all['dets']) # process detection format
         matched, unmatched_dets, unmatched_trks, cost, affi = \

@@ -5,6 +5,7 @@ from filterpy.kalman import KalmanFilter
 
 
 class Target:
+    """."""
     def __init__(self, pose: np.ndarray, info: np.ndarray, track_id: int):
         self.initial_pose = pose
         self.time_since_update = 0
@@ -63,11 +64,11 @@ class Target:
         """."""
         return f'Target(id {self.id} state {self.kf.x.reshape(-1)} info {self.info})'
 
-    def compute_innovation_matrix(self):
+    def compute_innovation_matrix(self) -> np.ndarray:
         """compute the innovation matrix for association with mahalanobis distance"""
-        return np.matmul(np.matmul(self.kf.H, self.kf.P), self.kf.H.T) + self.kf.R
+        return self.kf.H.dot(self.kf.P.dot(self.kf.H.T)) + self.kf.R
 
-    def get_velocity(self):
+    def get_velocity(self) -> np.ndarray:
         # return the object velocity in the state
 
         return self.kf.x[7:]
