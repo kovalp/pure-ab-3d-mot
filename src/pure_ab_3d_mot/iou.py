@@ -40,6 +40,7 @@ def iou(box_a: Box3D, box_b: Box3D, metric: MetricKind = MetricKind.GIOU_3D) -> 
 
     if metric == MetricKind.IOU_2D:
         u_2d = box_a.w * box_a.l + box_b.w * box_b.l - i_2d
+        print(i_2d, u_2d)
         return i_2d / u_2d
     elif metric == MetricKind.GIOU_2D:
         u_2d = box_a.w * box_a.l + box_b.w * box_b.l - i_2d
@@ -60,9 +61,9 @@ def iou(box_a: Box3D, box_b: Box3D, metric: MetricKind = MetricKind.GIOU_3D) -> 
         return i_3d / u_3d - (c_3d - u_3d) / c_3d
 
 
-def compute_bottom1(box_a: Box3D) -> np.ndarray:
+def compute_bottom1(box: Box3D) -> np.ndarray:
     # obtain ground corners and area, not containing the height
-    corners = box2corners3d_camcoord(box_a)  # 8 x 3
+    corners = box2corners3d_camcoord(box)  # 8 x 3
 
     # get bottom corners and inverse order so that they are in the
     # counter-clockwise order to fulfill polygon_clip

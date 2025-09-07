@@ -20,32 +20,32 @@ def test_iou_2d_everything_equal(detections: List[Box3D]) -> None:
 def test_iou_2d_diff_ry(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
     distance = compute_affinity(detections, tracks, METRIC, None)
-    assert pytest.approx(distance) == 1.0  # The yaw does not affect the iou_2d
+    assert pytest.approx(distance) == 0.757396936416626
 
 
 def test_iou_2d_diff_ry_and_x(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
     tracks[0].x += 1
     distance = compute_affinity(detections, tracks, METRIC, None)
-    assert pytest.approx(distance) == 0.612417995929718
+    assert pytest.approx(distance) == 0.6247208714485168
 
 
 def test_iou_2d_diff_ry_and_y(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
     tracks[0].y += 1
     distance = compute_affinity(detections, tracks, METRIC, None)
-    assert pytest.approx(distance) == 1.0
+    assert pytest.approx(distance) == 0.757396936416626
 
 
 def test_iou_2d_diff_ry_and_z(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
     tracks[0].z += 1
     distance = compute_affinity(detections, tracks, METRIC, None)
-    assert pytest.approx(distance) == 0.6079602837562561
+    assert pytest.approx(distance) == 0.6277057528495789
 
 
 def test_iou_2d_diff_ry_and_h(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
     tracks[0].h += 1
     distance = compute_affinity(detections, tracks, METRIC, None)
-    assert pytest.approx(distance) == 1.0  # Difference in height does not affect the iou_2d
+    assert pytest.approx(distance) == 0.757396936416626

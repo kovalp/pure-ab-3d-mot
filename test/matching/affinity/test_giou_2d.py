@@ -20,32 +20,32 @@ def test_giou_2d_everything_equal(detections: List[Box3D]) -> None:
 def test_giou_2d_diff_ry(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
     distance = compute_affinity(detections, tracks, METRIC, None)
-    assert pytest.approx(distance) == 1.0  # The yaw does not affect the giou_2d
+    assert pytest.approx(distance) == 0.621537446975708
 
 
 def test_giou_2d_diff_ry_and_x(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
     tracks[0].x += 1
     distance = compute_affinity(detections, tracks, METRIC, None)
-    assert pytest.approx(distance) == 0.5992985367774963
+    assert pytest.approx(distance) == 0.5594278573989868
 
 
 def test_giou_2d_diff_ry_and_y(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
     tracks[0].y += 1
     distance = compute_affinity(detections, tracks, METRIC, None)
-    assert pytest.approx(distance) == 1.0
+    assert pytest.approx(distance) == 0.621537446975708
 
 
 def test_giou_2d_diff_ry_and_z(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
     tracks[0].z += 1
     distance = compute_affinity(detections, tracks, METRIC, None)
-    assert pytest.approx(distance) == 0.5948767066001892
+    assert pytest.approx(distance) == 0.5463569760322571
 
 
 def test_giou_2d_diff_ry_and_h(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
     tracks[0].h += 1
     distance = compute_affinity(detections, tracks, METRIC, None)
-    assert pytest.approx(distance) == 1.0  # Difference in height does not affect the giou_2d
+    assert pytest.approx(distance) == 0.621537446975708

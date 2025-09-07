@@ -89,20 +89,19 @@ def box2corners3d_camcoord(bbox: Box3D) -> np.ndarray:
     if bbox.corners_3d_cam is not None:
         return bbox.corners_3d_cam
 
-    # compute rotational matrix around yaw axis
-    # -1.57 means straight, so there is a rotation here
-    R = roty(bbox.ry)
-
     # 3d bounding box dimensions
     l, w, h = bbox.l, bbox.w, bbox.h
 
     # 3d bounding box corners
-    x_corners = [l / 2, l / 2, -l / 2, -l / 2, l / 2, l / 2, -l / 2, -l / 2];
-    y_corners = [0, 0, 0, 0, -h, -h, -h, -h];
-    z_corners = [w / 2, -w / 2, -w / 2, w / 2, w / 2, -w / 2, -w / 2, w / 2];
+    x_corners = [l / 2, l / 2, -l / 2, -l / 2, l / 2, l / 2, -l / 2, -l / 2]
+    y_corners = [0, 0, 0, 0, -h, -h, -h, -h]
+    z_corners = [w / 2, -w / 2, -w / 2, w / 2, w / 2, -w / 2, -w / 2, w / 2]
 
+    # compute rotational matrix around yaw axis
+    # -1.57 means straight, so there is a rotation here
+    rot_mat = roty(bbox.ry)
     # rotate and translate 3d bounding box
-    corners_3d = np.dot(R, np.vstack([x_corners, y_corners, z_corners]))
+    corners_3d = np.dot(rot_mat, np.vstack([x_corners, y_corners, z_corners]))
     corners_3d[0, :] = corners_3d[0, :] + bbox.x
     corners_3d[1, :] = corners_3d[1, :] + bbox.y
     corners_3d[2, :] = corners_3d[2, :] + bbox.z
