@@ -28,3 +28,4 @@ def test_first_det(tracker: Ab3DMot, det_reports1: Dict) -> None:
     ini_pose_ref = [4.0, 5.0, 6.0, 7.0, 3.0, 2.0, 8.0]
     assert target.initial_pose == pytest.approx(ini_pose_ref)
     assert tracker.id_now_output == pytest.approx([1.0])
+    assert tracker.frame_count == 1

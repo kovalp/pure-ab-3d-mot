@@ -1,17 +1,25 @@
+"""."""
+
+from typing import List
 import numpy as np
 from scipy.optimize import linear_sum_assignment
-from .dist_metrics import iou, dist3d, dist_ground, m_distance
+
+from .dist_metrics import dist3d, dist_ground, m_distance, MetricKind
+from .iou import iou
+from .box import Box3D
 
 
-def compute_affinity(dets, trks, metric, trk_inv_inn_matrices=None):
+def compute_affinity(
+    dets: List[Box3D], trks: List[Box3D], metric: MetricKind, trk_inv_inn_matrices: List[np.ndarray] = None
+) -> np.ndarray:
     # compute affinity matrix
+    assert isinstance(metric, MetricKind)
 
     aff_matrix = np.zeros((len(dets), len(trks)), dtype=np.float32)
     for d, det in enumerate(dets):
         for t, trk in enumerate(trks):
-
             # choose to use different distance metrics
-            if 'iou' in metric:
+            if 'iou' in metric.value:
                 dist_now = iou(det, trk, metric)
             elif metric == 'm_dis':
                 dist_now = -m_distance(det, trk, trk_inv_inn_matrices[t])
@@ -56,8 +64,14 @@ def greedy_matching(cost_matrix):
     return np.asarray(matched_indices)
 
 
-def data_association(dets, trks, metric, threshold, algm='greedy', \
-                     trk_innovation_matrix=None, hypothesis=1):
+def data_association(
+    dets: List[Box3D],
+    trks: List[Box3D],
+    metric: str,
+    threshold: float,
+    algm: str = 'greedy',
+    trk_innovation_matrix=None,
+):
     """
     Assigns detections to tracked object
 
@@ -85,16 +99,13 @@ def data_association(dets, trks, metric, threshold, algm='greedy', \
     aff_matrix = compute_affinity(dets, trks, metric, trk_inv_inn_matrices)
 
     # association based on the affinity matrix
-    if hypothesis == 1:
-        if algm == 'hungar':
-            row_ind, col_ind = linear_sum_assignment(-aff_matrix)  # hougarian algorithm
-            matched_indices = np.stack((row_ind, col_ind), axis=1)
-        elif algm == 'greedy':
-            matched_indices = greedy_matching(-aff_matrix)  # greedy matching
-        else:
-            assert False, 'error'
+    if algm == 'hungar':
+        row_ind, col_ind = linear_sum_assignment(-aff_matrix)  # Hungarian algorithm
+        matched_indices = np.stack((row_ind, col_ind), axis=1)
+    elif algm == 'greedy':
+        matched_indices = greedy_matching(-aff_matrix)  # greedy matching
     else:
-        cost_list, hun_list = best_k_matching(-aff_matrix, hypothesis)
+        assert False, 'error'
 
     # compute total cost
     cost = 0
@@ -104,15 +115,17 @@ def data_association(dets, trks, metric, threshold, algm='greedy', \
     # save for unmatched objects
     unmatched_dets = []
     for d, det in enumerate(dets):
-        if (d not in matched_indices[:, 0]): unmatched_dets.append(d)
+        if d not in matched_indices[:, 0]:
+            unmatched_dets.append(d)
     unmatched_trks = []
     for t, trk in enumerate(trks):
-        if (t not in matched_indices[:, 1]): unmatched_trks.append(t)
+        if t not in matched_indices[:, 1]:
+            unmatched_trks.append(t)
 
     # filter out matches with low affinity
     matches = []
     for m in matched_indices:
-        if (aff_matrix[m[0], m[1]] < threshold):
+        if aff_matrix[m[0], m[1]] < threshold:
             unmatched_dets.append(m[0])
             unmatched_trks.append(m[1])
         else:

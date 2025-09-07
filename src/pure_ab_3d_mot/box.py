@@ -61,52 +61,51 @@ class Box3D:
             bbox.s = data[-1]
         return bbox
 
-    @classmethod
-    def box2corners3d_camcoord(cls, bbox):
-        ''' Takes an object's 3D box with the representation of [x,y,z,theta,l,w,h] and
-            convert it to the 8 corners of the 3D box, the box is in the camera coordinate
-            with right x, down y, front z
 
-            Returns:
-                corners_3d: (8,3) array in in rect camera coord
+def box2corners3d_camcoord(bbox: Box3D) -> np.ndarray:
+    """Takes an object's 3D box with the representation of [x,y,z,theta,l,w,h] and
+       convert it to the 8 corners of the 3D box, the box is in the camera coordinate
+       with right x, down y, front z
 
-            box corner order is like follows
-                    1 -------- 0         top is bottom because y direction is negative
-                   /|         /|
-                  2 -------- 3 .
-                  | |        | |
-                  . 5 -------- 4
-                  |/         |/
-                  6 -------- 7
+        Returns:
+            corners_3d: (8,3) array in in rect camera coord
 
-            rect/ref camera coord:
-            right x, down y, front z
+        box corner order is like follows
+                1 -------- 0         top is bottom because y direction is negative
+               /|         /|
+              2 -------- 3 .
+              | |        | |
+              . 5 -------- 4
+              |/         |/
+              6 -------- 7
 
-            x -> w, z -> l, y -> h
-        '''
+        rect/ref camera coord:
+        right x, down y, front z
 
-        # if already computed before, then skip it
-        if bbox.corners_3d_cam is not None:
-            return bbox.corners_3d_cam
+        x -> w, z -> l, y -> h
+    """
 
-        # compute rotational matrix around yaw axis
-        # -1.57 means straight, so there is a rotation here
-        R = roty(bbox.ry)
+    # if already computed before, then skip it
+    if bbox.corners_3d_cam is not None:
+        return bbox.corners_3d_cam
 
-        # 3d bounding box dimensions
-        l, w, h = bbox.l, bbox.w, bbox.h
+    # 3d bounding box dimensions
+    l, w, h = bbox.l, bbox.w, bbox.h
 
-        # 3d bounding box corners
-        x_corners = [l / 2, l / 2, -l / 2, -l / 2, l / 2, l / 2, -l / 2, -l / 2];
-        y_corners = [0, 0, 0, 0, -h, -h, -h, -h];
-        z_corners = [w / 2, -w / 2, -w / 2, w / 2, w / 2, -w / 2, -w / 2, w / 2];
+    # 3d bounding box corners
+    x_corners = [l / 2, l / 2, -l / 2, -l / 2, l / 2, l / 2, -l / 2, -l / 2]
+    y_corners = [0, 0, 0, 0, -h, -h, -h, -h]
+    z_corners = [w / 2, -w / 2, -w / 2, w / 2, w / 2, -w / 2, -w / 2, w / 2]
 
-        # rotate and translate 3d bounding box
-        corners_3d = np.dot(R, np.vstack([x_corners, y_corners, z_corners]))
-        corners_3d[0, :] = corners_3d[0, :] + bbox.x
-        corners_3d[1, :] = corners_3d[1, :] + bbox.y
-        corners_3d[2, :] = corners_3d[2, :] + bbox.z
-        corners_3d = np.transpose(corners_3d)
-        bbox.corners_3d_cam = corners_3d
+    # compute rotational matrix around yaw axis
+    # -1.57 means straight, so there is a rotation here
+    rot_mat = roty(bbox.ry)
+    # rotate and translate 3d bounding box
+    corners_3d = np.dot(rot_mat, np.vstack([x_corners, y_corners, z_corners]))
+    corners_3d[0, :] = corners_3d[0, :] + bbox.x
+    corners_3d[1, :] = corners_3d[1, :] + bbox.y
+    corners_3d[2, :] = corners_3d[2, :] + bbox.z
+    corners_3d = np.transpose(corners_3d)
+    bbox.corners_3d_cam = corners_3d
 
-        return corners_3d
+    return corners_3d
