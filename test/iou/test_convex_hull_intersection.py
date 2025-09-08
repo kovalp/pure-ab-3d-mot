@@ -20,4 +20,3 @@ def test_no_intersection(poly: np.ndarray) -> None:
     inter_poly, area = convex_hull_intersection(poly, poly2)
     assert inter_poly is None
     assert area == pytest.approx(0.0)
-

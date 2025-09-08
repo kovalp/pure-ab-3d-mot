@@ -1,12 +1,14 @@
 """."""
 
 from typing import List
+
 import numpy as np
 import pytest
 
 from pure_ab_3d_mot.box import Box3D
 from pure_ab_3d_mot.dist_metrics import MetricKind
 from pure_ab_3d_mot.matching import compute_affinity
+
 
 METRIC = MetricKind.DIST_2D
 
@@ -18,21 +20,21 @@ def test_everything_equal(detections: List[Box3D]) -> None:
 
 def test_diff_ry_hwl(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
-    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(0.)
+    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(0.0)
     tracks[0].h += 1
-    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(0.)
+    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(0.0)
     tracks[0].w += 1
-    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(0.)
+    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(0.0)
     tracks[0].l += 1
-    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(0.)
+    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(0.0)
 
 
 def test_diff_ry_xyz(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
     tracks[0].x += 1
-    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(-1.)
+    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(-1.0)
     tracks[0].y += 1
-    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(-1.)
+    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(-1.0)
     tracks[0].z += 1
     assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(-1.4142135)
 
@@ -40,4 +42,4 @@ def test_diff_ry_xyz(detections: List[Box3D], tracks: List[Box3D]) -> None:
 def test_diff_ry_y(detections: List[Box3D], tracks: List[Box3D]) -> None:
     """."""
     tracks[0].y += 1
-    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(0.)
+    assert compute_affinity(detections, tracks, METRIC, []) == pytest.approx(0.0)

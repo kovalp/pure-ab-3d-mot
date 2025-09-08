@@ -34,7 +34,7 @@ def compute_affinity(dets: List[Box3D], trks: List[Box3D], metric: MetricKind,
     return aff_matrix
 
 
-def greedy_matching(cost_matrix):
+def greedy_matching(cost_matrix: np.ndarray) -> np.ndarray:
     # association in the greedy manner
     # refer to https://github.com/eddyhkchiu/mahalanobis_3d_multi_object_tracking/blob/master/main.py
 

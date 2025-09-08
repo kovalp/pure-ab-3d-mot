@@ -1,6 +1,7 @@
 """."""
 
 from typing import List
+
 import pytest
 
 from pure_ab_3d_mot.box import Box3D

@@ -1,12 +1,14 @@
 """."""
 
 from typing import List
+
 import numpy as np
 import pytest
 
 from pure_ab_3d_mot.box import Box3D
 from pure_ab_3d_mot.dist_metrics import MetricKind
 from pure_ab_3d_mot.matching import compute_affinity
+
 
 METRIC = MetricKind.GIOU_2D
 
