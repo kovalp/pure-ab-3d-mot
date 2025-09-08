@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from pure_ab_3d_mot.iou import polygon_clip, Poly2DT
+from pure_ab_3d_mot.iou import Poly2DT, polygon_clip
 
 
 def test_polygon_clip_everything_equal(poly: Poly2DT) -> None:

@@ -1,8 +1,10 @@
 """."""
 
 from typing import Dict, List, Union
-import pytest
+
 import numpy as np
+import pytest
+
 from pure_ab_3d_mot.tracker import Ab3DMot
 
 
