@@ -3,6 +3,7 @@
 from typing import Dict
 
 import numpy as np
+
 from pure_ab_3d_mot.tracker import Ab3DMot
 
 
