@@ -14,6 +14,12 @@ def tracker() -> Ab3DMot:
 
 
 @pytest.fixture
+def det_reports0() -> Dict[str, Union[List[List[float]], np.ndarray]]:
+    """."""
+    return {'dets': [], 'info': []}
+
+
+@pytest.fixture
 def det_reports1() -> Dict[str, Union[List[List[float]], np.ndarray]]:
     """."""
     return {

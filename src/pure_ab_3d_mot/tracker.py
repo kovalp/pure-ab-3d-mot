@@ -4,13 +4,13 @@
 
 import copy
 
-from typing import List
+from typing import Dict, List, Union
 
 import numpy as np
 
 from .box import Box3D
 from .dist_metrics import MetricKind
-from .matching import data_association
+from .matching import data_association, MatchingAlgorithm
 from .orientation_correction import orientation_correction, within_range
 from .process_dets import process_dets
 from .target import Target
@@ -25,7 +25,7 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
         self.id_now_output = []
         self.ego_com = False  # ego motion compensation
         self.ID_count = [1]
-        self.algorithm = 'hungar'
+        self.algorithm: MatchingAlgorithm = MatchingAlgorithm.HUNGARIAN
         self.metric = MetricKind.GIOU_3D
         self.threshold = -0.2
         self.min_hits = 3
@@ -54,7 +54,7 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
                 trk.kf.x[3] = within_range(trk.kf.x[3])
                 trk.info = info[d, :][0]
 
-    def birth(self, dets, info, unmatched_dets: List[int]) -> List[int]:
+    def birth(self, dets, info, unmatched_dets: np.ndarray) -> List[int]:
         # create and initialise new trackers for unmatched detections
 
         # dets = copy.copy(dets)
@@ -98,7 +98,7 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
             track.kf.x[3] = within_range(track.kf.x[3])  # correct the yaw angle
             track.time_since_update += 1                 # update statistics
 
-    def track(self, dets_all):
+    def track(self, dets_all: Dict[str, Union[List[List[float]], np.ndarray]]) -> np.ndarray:
         """
         Params:
               dets_all: dict

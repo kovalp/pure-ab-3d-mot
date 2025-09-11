@@ -17,4 +17,5 @@
   - Tested the Mahalanobis association metric.
   - Cease storing the corners of the bounding box in the objects `Box3D`.
   - Test the rest of the association metrics.
+  - Test the rest of the `data_association` function.
 

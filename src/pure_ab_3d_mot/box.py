@@ -1,6 +1,6 @@
 """."""
 
-from typing import Tuple
+from typing import Sequence, Tuple
 import numpy as np
 from .kitti_oxts import roty
 
@@ -51,9 +51,8 @@ class Box3D:
         return bbox
 
     @classmethod
-    def array2bbox(cls, data):
+    def array2bbox(cls, data: Sequence[float]) -> 'Box3D':
         # take the format of data of [x,y,z,theta,l,w,h]
-
         bbox = Box3D()
         bbox.x, bbox.y, bbox.z, bbox.ry, bbox.l, bbox.w, bbox.h = data[:7]
         if len(data) == 8:
