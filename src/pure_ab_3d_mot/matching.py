@@ -1,12 +1,21 @@
 """."""
 
-from typing import List, Union
+from typing import List, Tuple, Optional
 import numpy as np
 from scipy.optimize import linear_sum_assignment
 
 from .dist_metrics import dist3d, dist_ground, m_distance, MetricKind
 from .iou import iou
 from .box import Box3D
+
+from enum import Enum
+
+
+class MatchingAlgorithm(Enum):
+    """."""
+    GREEDY = 'greedy'
+    HUNGARIAN = 'hungarian'
+    UNKNOWN = 'unknown'
 
 
 def compute_affinity(dets: List[Box3D], trks: List[Box3D], metric: MetricKind,
@@ -67,9 +76,9 @@ def data_association(
     trks: List[Box3D],
     metric: MetricKind,
     threshold: float,
-    algm: str = 'greedy',
-    trk_innovation_matrix=None,
-):
+    algm: MatchingAlgorithm = MatchingAlgorithm.GREEDY,
+    trk_innovation_matrix: Optional[List[np.ndarray]] = None,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, float, np.ndarray]:
     """
     Assigns detections to tracked object
 
@@ -82,13 +91,13 @@ def data_association(
     # if there is no item in either row/col, skip the association and return all as unmatched
     aff_matrix = np.zeros((len(dets), len(trks)), dtype=np.float32)
     if len(trks) == 0:
-        return np.empty((0, 2), dtype=int), np.arange(len(dets)), [], 0, aff_matrix
+        return np.empty((0, 2), dtype=int), np.arange(len(dets), dtype=int), np.array([], dtype=int), 0, aff_matrix
     if len(dets) == 0:
-        return np.empty((0, 2), dtype=int), [], np.arange(len(trks)), 0, aff_matrix
+        return np.empty((0, 2), dtype=int), np.array([], dtype=int), np.arange(len(trks), dtype=int), 0, aff_matrix
 
     # prepare inverse innovation matrix for m_dis
-    if metric == 'm_dis':
-        assert trk_innovation_matrix is not None, 'error'
+    if metric == metric.MAHALANOBIS_DIST:
+        assert trk_innovation_matrix is not None, 'I need the list of innovation matrices.'
         trk_inv_inn_matrices = [np.linalg.inv(m) for m in trk_innovation_matrix]
     else:
         trk_inv_inn_matrices = None
@@ -97,10 +106,10 @@ def data_association(
     aff_matrix = compute_affinity(dets, trks, metric, trk_inv_inn_matrices)
 
     # association based on the affinity matrix
-    if algm == 'hungar':
+    if algm == MatchingAlgorithm.HUNGARIAN:
         row_ind, col_ind = linear_sum_assignment(-aff_matrix)  # Hungarian algorithm
         matched_indices = np.stack((row_ind, col_ind), axis=1)
-    elif algm == 'greedy':
+    elif algm == MatchingAlgorithm.GREEDY:
         matched_indices = greedy_matching(-aff_matrix)  # greedy matching
     else:
         assert False, 'error'
@@ -133,4 +142,7 @@ def data_association(
     else:
         matches = np.concatenate(matches, axis=0)
 
-    return matches, np.array(unmatched_dets), np.array(unmatched_trks), cost, aff_matrix
+    return (matches,
+            np.array(unmatched_dets, dtype=int),
+            np.array(unmatched_trks, dtype=int),
+            cost, aff_matrix)
