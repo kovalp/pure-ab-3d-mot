@@ -130,12 +130,9 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
 
         info = dets_all['info']
         self.update(matched, unmatched_trks, det_boxes, info)
-        self.birth(
-            det_boxes, info, unmatched_dets
-        )  # create and initialise new trackers for unmatched detections
+        self.birth(det_boxes, info, unmatched_dets)  # create and initialise new trackers
 
-        # output existing valid tracks
-        results = self.output()
+        results = self.output()  # output existing valid tracks
         if len(results) > 0:
             results = [np.concatenate(results)]  # h,w,l,x,y,z,theta, ID, other info, confidence
         else:
