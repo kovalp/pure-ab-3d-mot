@@ -1,11 +1,13 @@
 """."""
 
 import numpy as np
+
 from filterpy.kalman import KalmanFilter
 
 
 class Target:
     """."""
+
     def __init__(self, pose: np.ndarray, info: np.ndarray, track_id: int):
         self.initial_pose = pose
         self.time_since_update = 0

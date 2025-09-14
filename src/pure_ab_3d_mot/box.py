@@ -1,12 +1,14 @@
 """."""
 
-from typing import Sequence, Tuple
+from typing import Sequence
+
 import numpy as np
+
 from .kitti_oxts import roty
 
 
 class Box3D:
-    def __init__(self, x=None, y=None, z=None, h=None, w=None, l=None, ry=None, s=None):
+    def __init__(self, x=None, y=None, z=None, h=None, w=None, l=None, ry=None, s=None) -> None:  # noqa: E741
         self.x = x  # center x
         self.y = y  # center y
         self.z = z  # center z
@@ -18,13 +20,20 @@ class Box3D:
 
     def __repr__(self) -> str:
         return 'Box3D(pose {} {} {} {} size {} {} {} score {})'.format(
-            self.x, self.y, self.z, self.ry, self.l, self.w, self.h, self.s)
+            self.x, self.y, self.z, self.ry, self.l, self.w, self.h, self.s
+        )
 
     @classmethod
     def bbox2dict(cls, bbox):
         return {
-            'center_x': bbox.x, 'center_y': bbox.y, 'center_z': bbox.z,
-            'height': bbox.h, 'width': bbox.w, 'length': bbox.l, 'heading': bbox.ry}
+            'center_x': bbox.x,
+            'center_y': bbox.y,
+            'center_z': bbox.z,
+            'height': bbox.h,
+            'width': bbox.w,
+            'length': bbox.l,
+            'heading': bbox.ry,
+        }
 
     @classmethod
     def bbox2array(cls, bbox):
@@ -41,7 +50,7 @@ class Box3D:
             return np.array([bbox.h, bbox.w, bbox.l, bbox.x, bbox.y, bbox.z, bbox.ry, bbox.s])
 
     @classmethod
-    def array2bbox_raw(cls, data: Tuple[float, float, float, float, float, float, float]):
+    def array2bbox_raw(cls, data: Sequence[float]) -> 'Box3D':
         # take the format of data of [h,w,l,x,y,z,theta]
 
         bbox = Box3D()
@@ -62,31 +71,31 @@ class Box3D:
 
 def box2corners3d_camcoord(bbox: Box3D) -> np.ndarray:
     """Takes an object's 3D box with the representation of [x,y,z,theta,l,w,h] and
-       convert it to the 8 corners of the 3D box, the box is in the camera coordinate
-       with right x, down y, front z
+    convert it to the 8 corners of the 3D box, the box is in the camera coordinate
+    with right x, down y, front z
 
-        Returns:
-            corners_3d: (8,3) array in rect camera coord
+     Returns:
+         corners_3d: (8,3) array in rect camera coord
 
-        box corner order is like follows
-                1 -------- 0         top is bottom because y direction is negative
-               /|         /|
-              2 -------- 3 .
-              | |        | |
-              . 5 -------- 4
-              |/         |/
-              6 -------- 7
+     box corner order is like follows
+             1 -------- 0         top is bottom because y direction is negative
+            /|         /|
+           2 -------- 3 .
+           | |        | |
+           . 5 -------- 4
+           |/         |/
+           6 -------- 7
 
-        rect/ref camera coord:
-        right x, down y, front z
+     rect/ref camera coord:
+     right x, down y, front z
 
-        x -> w, z -> l, y -> h
+     x -> w, z -> l, y -> h
     """
     # 3d bounding box dimensions
-    l, w, h = bbox.l, bbox.w, bbox.h
+    l_, w, h = bbox.l, bbox.w, bbox.h
 
     # 3d bounding box corners
-    x_corners = [l / 2, l / 2, -l / 2, -l / 2, l / 2, l / 2, -l / 2, -l / 2]
+    x_corners = [l_ / 2, l_ / 2, -l_ / 2, -l_ / 2, l_ / 2, l_ / 2, -l_ / 2, -l_ / 2]
     y_corners = [0, 0, 0, 0, -h, -h, -h, -h]
     z_corners = [w / 2, -w / 2, -w / 2, w / 2, w / 2, -w / 2, -w / 2, w / 2]
 

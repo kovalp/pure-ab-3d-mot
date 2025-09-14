@@ -1,16 +1,17 @@
 """."""
 
+import math
+
 from enum import Enum
 
 import numpy as np
-
-import math
 
 from .box import Box3D, box2corners3d_camcoord
 
 
 class MetricKind(Enum):
     """."""
+
     IOU_3D = 'iou_3d'
     GIOU_3D = 'giou_3d'
     IOU_2D = 'iou_2d'
@@ -57,7 +58,7 @@ def m_distance(det, trk, trk_inv_innovation_matrix=None) -> float:
     diff = np.expand_dims(det_array - trk_array, axis=1)  # 7 x 1
 
     # correct orientation
-    corrected_yaw_diff = diff_orientation_correction(float(diff[3]))
+    corrected_yaw_diff = diff_orientation_correction(float(diff[3, 0]))
     diff[3] = corrected_yaw_diff
 
     if trk_inv_innovation_matrix is not None:

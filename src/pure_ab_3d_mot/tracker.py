@@ -10,7 +10,7 @@ import numpy as np
 
 from .box import Box3D
 from .dist_metrics import MetricKind
-from .matching import data_association, MatchingAlgorithm
+from .matching import MatchingAlgorithm, data_association
 from .orientation_correction import orientation_correction, within_range
 from .process_dets import process_dets
 from .target import Target
@@ -18,6 +18,7 @@ from .target import Target
 
 class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
     """."""
+
     def __init__(self) -> None:
         """."""
         self.trackers: List[Target] = []
@@ -69,34 +70,34 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
 
         return new_id_list
 
-    def output(self):
+    def output(self) -> List[np.ndarray]:
         # output exiting tracks that have been stably associated, i.e., >= min_hits
         # and also delete tracks that have appeared for a long time, i.e., >= max_age
 
-        num_trks = len(self.trackers)
+        track_num = len(self.trackers)
         results = []
         for trk in reversed(self.trackers):
             # change format from [x,y,z,theta,l,w,h] to [h,w,l,x,y,z,theta]
-            d = Box3D.array2bbox(trk.kf.x[:7].reshape((7,)))  # bbox location self
-            d = Box3D.bbox2array_raw(d)
+            my_box = Box3D.array2bbox(trk.kf.x[:7].reshape((7,)))  # bbox location self
+            kitti_det = Box3D.bbox2array_raw(my_box)
 
-            if ((trk.time_since_update < self.max_age) and (
-                    trk.hits >= self.min_hits or self.frame_count <= self.min_hits)):
-                results.append(np.concatenate((d, [trk.id], trk.info)).reshape(1, -1))
-            num_trks -= 1
+            if trk.time_since_update < self.max_age and (
+                trk.hits >= self.min_hits or self.frame_count <= self.min_hits
+            ):
+                results.append(np.concatenate((kitti_det, [trk.id], trk.info)).reshape(1, -1))
 
-            # death, remove dead tracklet
-            if (trk.time_since_update >= self.max_age):
-                self.trackers.pop(num_trks)
+            track_num -= 1
+            if trk.time_since_update >= self.max_age:
+                self.trackers.pop(track_num)  # death, remove dead tracklet
 
         return results
 
     def prediction(self) -> None:
         # get predicted locations from existing tracks
         for track in self.trackers:
-            track.kf.predict()                           # propagate locations
+            track.kf.predict()  # propagate locations
             track.kf.x[3] = within_range(track.kf.x[3])  # correct the yaw angle
-            track.time_since_update += 1                 # update statistics
+            track.time_since_update += 1  # update statistics
 
     def track(self, dets_all: Dict[str, Union[List[List[float]], np.ndarray]]) -> np.ndarray:
         """
@@ -117,18 +118,21 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
         trk_innovation_mat = []
         if self.metric == MetricKind.MAHALANOBIS_DIST:
             trk_innovation_mat = [trk.compute_innovation_matrix() for trk in self.trackers]
-        det_boxes = process_dets(dets_all['dets']) # process detection format
-        matched, unmatched_dets, unmatched_trks, cost, affi = \
-            data_association(det_boxes,
-                             self.get_target_boxes(),
-                             self.metric,
-                             self.threshold,
-                             self.algorithm,
-                             trk_innovation_mat)
+        det_boxes = process_dets(dets_all['dets'])  # process detection format
+        matched, unmatched_dets, unmatched_trks, cost, affi = data_association(
+            det_boxes,
+            self.get_target_boxes(),
+            self.metric,
+            self.threshold,
+            self.algorithm,
+            trk_innovation_mat,
+        )
 
         info = dets_all['info']
         self.update(matched, unmatched_trks, det_boxes, info)
-        self.birth(det_boxes, info, unmatched_dets)  # create and initialise new trackers for unmatched detections
+        self.birth(
+            det_boxes, info, unmatched_dets
+        )  # create and initialise new trackers for unmatched detections
 
         # output existing valid tracks
         results = self.output()
