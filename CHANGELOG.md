@@ -1,6 +1,7 @@
 # 0.2.0
 
-  - Example 1_757 of nuScenes annotations in unit tests. 
+  - Example 1-757 of nuScenes annotations in unit tests.
+  - Publish in PyPI registry.
 
 # 0.1.0
 

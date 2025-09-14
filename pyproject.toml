@@ -19,10 +19,9 @@ dependencies = [
     "scipy-stubs>=1.14.1.3; python_version > '3.9'"
 ]
 
-
 [project.urls]
 Repository = "https://github.com/kovalp/pure-ab-3d-mot"
-Issues = "https://github.com/kovalp/pure-ab-3d-mot/issues"
+
 
 [tool.uv]
 package = true
