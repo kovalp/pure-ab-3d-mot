@@ -44,9 +44,9 @@ def test_to_kitti_array(box: Box3D) -> None:
 
 
 def test_from_kitti_det() -> None:
-    box = Box3D.array2bbox_raw([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
+    box = Box3D.from_kitti([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0])
     assert repr(box) == 'Box3D(pose 4.0 5.0 6.0 7.0 size 3.0 2.0 1.0 score None)'
-    box = Box3D.array2bbox_raw([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 0.45])
+    box = Box3D.from_kitti([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 0.45])
     assert repr(box) == 'Box3D(pose 4.0 5.0 6.0 7.0 size 3.0 2.0 1.0 score 0.45)'
 
 

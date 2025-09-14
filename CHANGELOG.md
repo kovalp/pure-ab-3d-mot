@@ -1,3 +1,7 @@
+# 0.2.0
+
+  - Example of nuScenes annotations in unit tests. 
+
 # 0.1.0
 
   - Added unit tests

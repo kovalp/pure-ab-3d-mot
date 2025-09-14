@@ -16,7 +16,7 @@ def process_dets(dets) -> List[Box3D]:
     """
     dets_new = []
     for det in dets:
-        det_tmp = Box3D.array2bbox_raw(det)
+        det_tmp = Box3D.from_kitti(det)
         dets_new.append(det_tmp)
 
     return dets_new
