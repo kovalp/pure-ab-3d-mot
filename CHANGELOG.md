@@ -18,4 +18,6 @@
   - Cease storing the corners of the bounding box in the objects `Box3D`.
   - Test the rest of the association metrics.
   - Test the rest of the `data_association` function.
+  - Leave only `roty` from `kitti_oxts`
+  - Achieve 100% coverage in unit tests.
 
