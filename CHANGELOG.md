@@ -20,4 +20,6 @@
   - Test the rest of the `data_association` function.
   - Leave only `roty` from `kitti_oxts`
   - Achieve 100% coverage in unit tests.
+  - Run reformat and isort  (`ruff format` and `ruff check --fix`).
+
 
