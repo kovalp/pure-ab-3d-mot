@@ -21,7 +21,7 @@ dependencies = [
 
 [project.urls]
 Repository = "https://github.com/kovalp/pure-ab-3d-mot"
-
+ChangeLog = "https://github.com/kovalp/pure-ab-3d-mot/CHANGELOG.md"
 
 [tool.uv]
 package = true

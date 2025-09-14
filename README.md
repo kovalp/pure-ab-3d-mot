@@ -9,7 +9,7 @@ The gist of the AB3DMOT (a base-line of 3D multiple-object tracking).
 The original package is refactored to demonstrate the (binary) classification of 
 the tracks via instrumentation of the tracker.
 
-See the [changelog](CHANGELOG.md) for a detailed list of refactoring edits.
+See the [changelog](https://github.com/kovalp/pure-ab-3d-mot/CHANGELOG.md) for a detailed list of refactoring edits.
 
 ## Usage
 
