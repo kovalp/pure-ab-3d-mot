@@ -1,25 +1,30 @@
 """."""
 
-from typing import List, Tuple, Optional
+from enum import Enum
+from typing import List, Optional, Tuple
+
 import numpy as np
+
 from scipy.optimize import linear_sum_assignment
 
-from .dist_metrics import dist3d, dist_ground, m_distance, MetricKind
-from .iou import iou
 from .box import Box3D
-
-from enum import Enum
+from .dist_metrics import MetricKind, dist3d, dist_ground, m_distance
+from .iou import iou
 
 
 class MatchingAlgorithm(Enum):
     """."""
+
     GREEDY = 'greedy'
     HUNGARIAN = 'hungarian'
     UNKNOWN = 'unknown'
 
 
-def compute_affinity(dets: List[Box3D], trks: List[Box3D], metric: MetricKind,
-                     trk_inv_inn_matrices: List[np.ndarray] = None
+def compute_affinity(
+    dets: List[Box3D],
+    trks: List[Box3D],
+    metric: MetricKind,
+    trk_inv_inn_matrices: List[np.ndarray] = None,
 ) -> np.ndarray:
     # compute affinity matrix
     assert isinstance(metric, MetricKind)
@@ -91,9 +96,21 @@ def data_association(
     # if there is no item in either row/col, skip the association and return all as unmatched
     aff_matrix = np.zeros((len(dets), len(trks)), dtype=np.float32)
     if len(trks) == 0:
-        return np.empty((0, 2), dtype=int), np.arange(len(dets), dtype=int), np.array([], dtype=int), 0, aff_matrix
+        return (
+            np.empty((0, 2), dtype=int),
+            np.arange(len(dets), dtype=int),
+            np.array([], dtype=int),
+            0,
+            aff_matrix,
+        )
     if len(dets) == 0:
-        return np.empty((0, 2), dtype=int), np.array([], dtype=int), np.arange(len(trks), dtype=int), 0, aff_matrix
+        return (
+            np.empty((0, 2), dtype=int),
+            np.array([], dtype=int),
+            np.arange(len(trks), dtype=int),
+            0,
+            aff_matrix,
+        )
 
     # prepare inverse innovation matrix for m_dis
     if metric == metric.MAHALANOBIS_DIST:
@@ -142,7 +159,10 @@ def data_association(
     else:
         matches = np.concatenate(matches, axis=0)
 
-    return (matches,
-            np.array(unmatched_dets, dtype=int),
-            np.array(unmatched_trks, dtype=int),
-            cost, aff_matrix)
+    return (
+        matches,
+        np.array(unmatched_dets, dtype=int),
+        np.array(unmatched_trks, dtype=int),
+        cost,
+        aff_matrix,
+    )
