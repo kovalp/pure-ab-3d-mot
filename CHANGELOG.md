@@ -1,3 +1,8 @@
+# 0.3.0
+
+  - Smaller value of the spatial tolerance (1e-14) to better serve in evaluation.
+
+
 # 0.2.0
 
   - Example 1-757 of nuScenes annotations in unit tests.

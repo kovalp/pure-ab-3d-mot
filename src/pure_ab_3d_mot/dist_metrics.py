@@ -20,6 +20,7 @@ class MetricKind(Enum):
     EULER = 'euler'
     DIST_2D = 'dist_2d'
     DIST_3D = 'dist_3d'
+    UNKNOWN = 'unknown'
 
 
 def dist_ground(bbox1: Box3D, bbox2: Box3D) -> float:
