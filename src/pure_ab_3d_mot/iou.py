@@ -11,6 +11,7 @@ from pure_ab_3d_mot.dist_metrics import MetricKind
 
 
 Poly2DT = Union[List[Tuple[float, float]], np.ndarray]
+TOL_INSIDE = 1e-14
 
 
 def iou(box_a: Box3D, box_b: Box3D, metric: MetricKind = MetricKind.GIOU_3D) -> Union[float, None]:
@@ -34,7 +35,6 @@ def iou(box_a: Box3D, box_b: Box3D, metric: MetricKind = MetricKind.GIOU_3D) -> 
     rect/ref camera coord:
     right x, down y, front z
     """
-
     # compute 2D related measures
     corners_a = compute_bottom1(box_a)
     corners_b = compute_bottom1(box_b)
@@ -42,7 +42,6 @@ def iou(box_a: Box3D, box_b: Box3D, metric: MetricKind = MetricKind.GIOU_3D) -> 
 
     if metric == MetricKind.IOU_2D:
         u_2d = box_a.w * box_a.l + box_b.w * box_b.l - i_2d
-        print(i_2d, u_2d)
         return i_2d / u_2d
     elif metric == MetricKind.GIOU_2D:
         u_2d = box_a.w * box_a.l + box_b.w * box_b.l - i_2d
@@ -53,7 +52,9 @@ def iou(box_a: Box3D, box_b: Box3D, metric: MetricKind = MetricKind.GIOU_3D) -> 
         i_3d = i_2d * overlap_height
         u_3d = box_a.w * box_a.l * box_a.h + box_b.w * box_b.l * box_b.h - i_3d
         return i_3d / u_3d
-    elif metric == MetricKind.GIOU_3D:
+    else:
+        if metric != MetricKind.GIOU_3D:
+            raise ValueError(f'Metric: {metric} is not supported.')
         overlap_height = compute_height(box_a, box_b)
         i_3d = i_2d * overlap_height
         u_3d = box_a.w * box_a.l * box_a.h + box_b.w * box_b.l * box_b.h - i_3d
@@ -183,6 +184,3 @@ def PolyArea2D(pts):
     roll_pts = np.roll(pts, -1, axis=0)
     area = np.abs(np.sum((pts[:, 0] * roll_pts[:, 1] - pts[:, 1] * roll_pts[:, 0]))) * 0.5
     return area
-
-
-TOL_INSIDE = 1e-4
