@@ -8,12 +8,12 @@ from typing import Dict, List, Sequence, Tuple, Union
 import numpy as np
 
 from .box import Box3D
-from .clavia_conventions import UPD_ID_LOOSE
+from .clavia_conventions import UPD_ID_LOOSE, ANN_IDS
 from .dist_metrics import MetricKind
 from .matching import MatchingAlgorithm, data_association
 from .orientation_correction import orientation_correction, within_range
 from .process_dets import process_dets
-from .str_const import ANN_IDS, DETS, INFO
+from .str_const import DETS, INFO
 from .target import Target
 
 
