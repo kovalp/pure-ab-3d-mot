@@ -1,3 +1,14 @@
+# 0.5.0
+
+  - Various improvements in the `Ab3dMot.update` method.
+  - Typehints in the `Box3D.bbox2array`.
+  - Rename the `Box3D.bbox2array_raw` to `Box3D.bbox2array_kitti`.
+  - Refactoring the `process_dets` function.
+  - Add submodule `str_const`.
+  - Rename the argument `dets` of `Ab3dMot.birth` to `det_boxes`.
+  - Formatting the docstring in `Ab3dMot.track` according to Google standard.
+  - Added unit tests for internal methods `Ab3dMot.birth` and `Ab3dMot.update`.
+
 # 0.4.0
 
   - Typehints in the arguments of the `Ab3dMot.birth` method.
