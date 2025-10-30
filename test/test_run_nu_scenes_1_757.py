@@ -4,6 +4,7 @@ from pathlib import Path
 
 import numpy as np
 
+from pure_ab_3d_mot.str_const import ANN_IDS, DETS, INFO
 from pure_ab_3d_mot.tracker import Ab3DMot
 
 
@@ -18,9 +19,9 @@ def test_run_1_757(files_dir: Path) -> None:
     tracker = Ab3DMot()
     for ts_num, time_stamp in enumerate(time_stamps):
         time_stamp_mask = np.where(t_id[:, 0] == time_stamp)
-        ids_r = t_id[time_stamp_mask, 1]
+        ids_r = t_id[time_stamp_mask, 1].T
         det_r = ann[time_stamp_mask][:, to_kitti]
-        det_dct = {'dets': det_r, 'info': ids_r.T}
+        det_dct = {DETS: det_r, INFO: ids_r, ANN_IDS: ids_r}
         tracker.track(det_dct)
 
     assert len(tracker.trackers) == 13

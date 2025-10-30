@@ -4,11 +4,17 @@ import numpy as np
 
 from filterpy.kalman import KalmanFilter
 
+from .clavia_conventions import ANN_ID_UNKNOWN
+
 
 class Target:
     """."""
 
-    def __init__(self, pose: np.ndarray, info: np.ndarray, track_id: int):
+    def __init__(
+        self, pose: np.ndarray, info: np.ndarray, track_id: int, *, ann_id: int = ANN_ID_UNKNOWN
+    ) -> None:
+        self.ann_id = ann_id
+        self.upd_id = ann_id
         self.initial_pose = pose
         self.time_since_update = 0
         self.id = track_id

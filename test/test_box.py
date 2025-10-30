@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 
 from pure_ab_3d_mot.box import Box3D, box2corners3d_camcoord
+from pure_ab_3d_mot.clavia_conventions import ANN_ID_UNKNOWN
 
 
 @pytest.fixture
@@ -17,6 +18,7 @@ def test_repr(box: Box3D) -> None:
 
 def test_basics(box: Box3D) -> None:
     assert box.s == pytest.approx(0.789)
+    assert box.ann_id == ANN_ID_UNKNOWN
 
 
 def test_to_dict(box: Box3D) -> None:
@@ -38,9 +40,9 @@ def test_to_ab_3d_mot_array(box: Box3D) -> None:
 
 
 def test_to_kitti_array(box: Box3D) -> None:
-    assert box.bbox2array_raw(box) == pytest.approx([4.0, 5.0, 6.0, 1.0, 2.0, 3.0, 0.678, 0.789])
+    assert box.bbox2array_kitti(box) == pytest.approx([4.0, 5.0, 6.0, 1.0, 2.0, 3.0, 0.678, 0.789])
     box.s = None
-    assert box.bbox2array_raw(box) == pytest.approx([4.0, 5.0, 6.0, 1.0, 2.0, 3.0, 0.678])
+    assert box.bbox2array_kitti(box) == pytest.approx([4.0, 5.0, 6.0, 1.0, 2.0, 3.0, 0.678])
 
 
 def test_from_kitti_det() -> None:
