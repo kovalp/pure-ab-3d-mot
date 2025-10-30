@@ -4,7 +4,7 @@
 
 import copy
 
-from typing import Dict, List, Union
+from typing import Dict, List, Sequence, Union
 
 import numpy as np
 
@@ -55,10 +55,12 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
                 trk.kf.x[3] = within_range(trk.kf.x[3])
                 trk.info = info[d, :][0]
 
-    def birth(self, dets, info, unmatched_dets: np.ndarray) -> List[int]:
+    def birth(self,
+              dets: List[Box3D],
+              info: np.ndarray,
+              unmatched_dets: Sequence[int]) -> List[int]:
         # create and initialise new trackers for unmatched detections
 
-        # dets = copy.copy(dets)
         new_id_list = list()  # new ID generated for unmatched detections
         for i in unmatched_dets:  # a scalar of index
             trk = Target(Box3D.bbox2array(dets[i]), info[i, :], self.ID_count[0])
