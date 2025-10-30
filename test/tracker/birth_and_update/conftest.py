@@ -11,7 +11,7 @@ from pure_ab_3d_mot.tracker import Ab3DMot
 
 @pytest.fixture
 def boxes() -> List[Box3D]:
-    return [Box3D(x=2, y=3, z=4, h=4, w=5, l=6, ry=0.678, s=0.789)]
+    return [Box3D(x=2, y=3, z=4, h=4, w=5, l=6, ry=0.678, s=0.789, ann_id=123)]
 
 
 @pytest.fixture
