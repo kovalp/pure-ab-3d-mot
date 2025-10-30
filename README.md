@@ -2,6 +2,9 @@
 
 The gist of the AB3DMOT (a base-line of 3D multiple-object tracking).
 
+This version produces the same results as original AB3DMOT tracker 
+without center-of-motion (COM) correction.
+
 [Original repo](https://github.com/xinshuoweng/AB3DMOT)
 
 
