@@ -13,6 +13,7 @@ from .dist_metrics import MetricKind
 from .matching import MatchingAlgorithm, data_association
 from .orientation_correction import orientation_correction, within_range
 from .process_dets import process_dets
+from .str_const import ANN_IDS, DETS
 from .target import Target
 
 
@@ -56,17 +57,17 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
                 trk.info = info[d, :][0]
 
     def birth(
-        self, dets: List[Box3D], info: np.ndarray, unmatched_dets: Sequence[int]
+        self, boxes: List[Box3D], info: np.ndarray, unmatched_detections: Sequence[int]
     ) -> List[int]:
         # create and initialise new trackers for unmatched detections
 
-        new_id_list = list()  # new ID generated for unmatched detections
-        for i in unmatched_dets:  # a scalar of index
-            trk = Target(Box3D.bbox2array(dets[i]), info[i, :], self.ID_count[0])
+        new_id_list = []  # new ID will be generated for unmatched detections
+        for i in unmatched_detections:
+            box = boxes[i]
+            pose = Box3D.bbox2array(box)[:7]
+            trk = Target(pose, info[i, :], self.ID_count[0], ann_id=box.ann_id)
             self.trackers.append(trk)
             new_id_list.append(trk.id)
-            # print('track ID %s has been initialized due to new detection' % trk.id)
-
             self.ID_count[0] += 1
 
         return new_id_list
@@ -80,7 +81,7 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
         for trk in reversed(self.trackers):
             # change format from [x,y,z,theta,l,w,h] to [h,w,l,x,y,z,theta]
             my_box = Box3D.array2bbox(trk.kf.x[:7].reshape((7,)))  # bbox location self
-            kitti_det = Box3D.bbox2array_raw(my_box)
+            kitti_det = Box3D.bbox2array_kitti(my_box)
 
             if trk.time_since_update < self.max_age and (
                 trk.hits >= self.min_hits or self.frame_count <= self.min_hits
@@ -102,10 +103,11 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
 
     def track(self, dets_all: Dict[str, Union[List[List[float]], np.ndarray]]) -> np.ndarray:
         """
-        Params:
-              dets_all: dict
-                dets - a numpy array of detections in the format [[h,w,l,x,y,z,theta],...]
-                info: a array of other info for each det
+        Args:
+            dets_all: dictionary with keys
+                'dets' - a numpy array of detections in the format [[h,w,l,x,y,z,theta],...]
+                'info' - an array of other info for each det
+                'ann_ids' - optional array of annotation ids.
             frame:    str, frame number, used to query ego pose
         Requires: this method must be called once for each frame even with empty detections.
         Returns a similar array, where the last column is the object ID.
@@ -119,7 +121,7 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
         trk_innovation_mat = []
         if self.metric == MetricKind.MAHALANOBIS_DIST:
             trk_innovation_mat = [trk.compute_innovation_matrix() for trk in self.trackers]
-        det_boxes = process_dets(dets_all['dets'])  # process detection format
+        det_boxes = process_dets(dets_all[DETS], dets_all.get(ANN_IDS, []))
         matched, unmatched_dets, unmatched_trks, cost, affi = data_association(
             det_boxes,
             self.get_target_boxes(),

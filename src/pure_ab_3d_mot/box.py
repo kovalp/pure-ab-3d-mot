@@ -4,11 +4,24 @@ from typing import Sequence
 
 import numpy as np
 
+from .clavia_conventions import ANN_ID_UNKNOWN
 from .kitti_oxts import roty
 
 
 class Box3D:
-    def __init__(self, x=None, y=None, z=None, h=None, w=None, l=None, ry=None, s=None) -> None:  # noqa: E741
+    def __init__(
+        self,
+        x=None,
+        y=None,
+        z=None,
+        h=None,
+        w=None,
+        l=None,  # noqa: E741
+        ry=None,
+        s=None,
+        *,
+        ann_id: int = ANN_ID_UNKNOWN,
+    ) -> None:
         self.x = x  # center x
         self.y = y  # center y
         self.z = z  # center z
@@ -17,6 +30,7 @@ class Box3D:
         self.l = l  # length
         self.ry = ry  # orientation
         self.s = s  # detection score
+        self.ann_id = ann_id
 
     def __repr__(self) -> str:
         return 'Box3D(pose {} {} {} {} size {} {} {} score {})'.format(
@@ -36,14 +50,14 @@ class Box3D:
         }
 
     @classmethod
-    def bbox2array(cls, bbox):
+    def bbox2array(cls, bbox: 'Box3D') -> np.ndarray:
         if bbox.s is None:
             return np.array([bbox.x, bbox.y, bbox.z, bbox.ry, bbox.l, bbox.w, bbox.h])
         else:
             return np.array([bbox.x, bbox.y, bbox.z, bbox.ry, bbox.l, bbox.w, bbox.h, bbox.s])
 
     @classmethod
-    def bbox2array_raw(cls, bbox):
+    def bbox2array_kitti(cls, bbox: 'Box3D') -> np.ndarray:
         if bbox.s is None:
             return np.array([bbox.h, bbox.w, bbox.l, bbox.x, bbox.y, bbox.z, bbox.ry])
         else:
