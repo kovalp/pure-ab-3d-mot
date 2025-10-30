@@ -52,9 +52,9 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
         """
         for t, trk in enumerate(self.trackers):
             if t not in unmatched_tracks:
-                d = matched[np.where(matched[:, 1] == t)[0], 0]  # a list of index
-                det_box = det_boxes[d[0]]
-                assert len(d) == 1, 'error'
+                det_idx = matched[matched[:, 1] == t, 0]  # a list of detection indices
+                assert det_idx.size == 1
+                det_box = det_boxes[det_idx[0]]
 
                 # update statistics
                 trk.time_since_update = 0  # reset because just updated
@@ -68,7 +68,7 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
                 # kalman filter update with observation
                 trk.kf.update(pose)
                 trk.kf.x[3] = within_range(trk.kf.x[3])
-                trk.info = info[d, :][0]
+                trk.info[:] = info[det_idx[0], :]
             else:
                 trk.upd_id = UPD_ID_LOOSE
 
