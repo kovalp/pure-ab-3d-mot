@@ -13,7 +13,7 @@ from .dist_metrics import MetricKind
 from .matching import MatchingAlgorithm, data_association
 from .orientation_correction import orientation_correction, within_range
 from .process_dets import process_dets
-from .str_const import ANN_IDS, DETS
+from .str_const import ANN_IDS, DETS, INFO
 from .target import Target
 
 
@@ -147,7 +147,7 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
             trk_innovation_mat,
         )
 
-        info = dets_all['info']
+        info = dets_all[INFO]
         self.update(matched, unmatched_trks, det_boxes, info)
         self.birth(det_boxes, info, unmatched_dets)  # create and initialise new trackers
 
