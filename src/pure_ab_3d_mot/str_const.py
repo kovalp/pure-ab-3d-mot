@@ -2,4 +2,3 @@
 
 DETS = 'dets'
 INFO = 'info'
-ANN_IDS = 'ann_ids'
