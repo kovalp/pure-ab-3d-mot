@@ -4,7 +4,6 @@ from typing import Sequence
 
 import numpy as np
 
-from .clavia_conventions import ANN_ID_UNKNOWN
 from .kitti_oxts import roty
 
 
@@ -19,8 +18,6 @@ class Box3D:
         l=None,  # noqa: E741
         ry=None,
         s=None,
-        *,
-        ann_id: int = ANN_ID_UNKNOWN,
     ) -> None:
         self.x = x  # center x
         self.y = y  # center y
@@ -30,7 +27,6 @@ class Box3D:
         self.l = l  # length
         self.ry = ry  # orientation
         self.s = s  # detection score
-        self.ann_id = ann_id
 
     def __repr__(self) -> str:
         return 'Box3D(pose {} {} {} {} size {} {} {} score {})'.format(
