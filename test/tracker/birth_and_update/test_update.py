@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 
 from pure_ab_3d_mot.box import Box3D
+from pure_ab_3d_mot.clavia_conventions import UPD_ID_LOOSE
 from pure_ab_3d_mot.tracker import Ab3DMot
 
 
@@ -21,6 +22,8 @@ def test_with_match(trk_t2: Ab3DMot, boxes: List[Box3D], info: np.ndarray) -> No
     assert trk_t2.trackers[0].kf.x[:, 0] == pytest.approx(ref)
     assert trk_t2.trackers[0].time_since_update == 0
     assert trk_t2.trackers[0].hits == 2
+    assert trk_t2.trackers[0].ann_id == 234
+    assert trk_t2.trackers[0].upd_id == 123
 
 
 def test_no_match(trk_t2: Ab3DMot, boxes: List[Box3D], info: np.ndarray) -> None:
@@ -31,3 +34,5 @@ def test_no_match(trk_t2: Ab3DMot, boxes: List[Box3D], info: np.ndarray) -> None
     assert trk_t2.trackers[0].kf.x[:, 0] == pytest.approx(ref)
     assert trk_t2.trackers[0].time_since_update == 2
     assert trk_t2.trackers[0].hits == 1
+    assert trk_t2.trackers[0].ann_id == 234
+    assert trk_t2.trackers[0].upd_id == UPD_ID_LOOSE
