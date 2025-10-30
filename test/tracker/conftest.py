@@ -33,6 +33,6 @@ def det_reports1() -> Dict[str, Union[List[List[float]], np.ndarray]]:
 def tracker1(tracker: Ab3DMot) -> Ab3DMot:
     pose = np.linspace(1.0, 7.0, num=7)
     info = np.linspace(8.0, 8.0 + 4.0, num=5)
-    target = Target(pose, info, 123)
+    target = Target(pose, info, 123, ann_id=234)
     tracker.trackers.append(target)
     return tracker

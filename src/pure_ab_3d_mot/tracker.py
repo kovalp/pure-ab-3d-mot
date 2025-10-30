@@ -2,13 +2,13 @@
 # email: xinshuo.weng@gmail.com
 # Refactored by <"Peter Koval" koval.peter@gmail.com> 2025
 
-import copy
 
-from typing import Dict, List, Sequence, Union
+from typing import Dict, List, Sequence, Tuple, Union
 
 import numpy as np
 
 from .box import Box3D
+from .clavia_conventions import UPD_ID_LOOSE
 from .dist_metrics import MetricKind
 from .matching import MatchingAlgorithm, data_association
 from .orientation_correction import orientation_correction, within_range
@@ -35,26 +35,42 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
         self.min_sim = -1.0
         self.max_sim = 1.0
 
-    def update(self, matched, unmatched_trks, dets, info):
-        # update matched trackers with assigned detections
-        dets = copy.copy(dets)
+    def update(
+        self,
+        matched: Union[np.ndarray, Sequence[Tuple[int, int]]],
+        unmatched_tracks: Union[np.ndarray, Sequence[int]],
+        det_boxes: List[Box3D],
+        info: Union[np.ndarray, Sequence[List[float]]],
+    ) -> None:
+        """Update matched trackers with assigned detections
+
+        Args:
+            matched: a list of associated detection-track pairs.
+            unmatched_tracks: a list of unmatched tracks.
+            det_boxes: the list of detections.
+            info: the array of other info for each detection.
+        """
         for t, trk in enumerate(self.trackers):
-            if t not in unmatched_trks:
+            if t not in unmatched_tracks:
                 d = matched[np.where(matched[:, 1] == t)[0], 0]  # a list of index
+                det_box = det_boxes[d[0]]
                 assert len(d) == 1, 'error'
 
                 # update statistics
                 trk.time_since_update = 0  # reset because just updated
                 trk.hits += 1
+                trk.upd_id = det_box.ann_id
 
                 # update orientation in propagated tracks and detected boxes so that they are within 90 degree
-                bbox3d = Box3D.bbox2array(dets[d[0]])
-                trk.kf.x[3], bbox3d[3] = orientation_correction(trk.kf.x[3], bbox3d[3])
+                pose = Box3D.bbox2array(det_box)[:7]
+                trk.kf.x[3], pose[3] = orientation_correction(trk.kf.x[3], pose[3])
 
                 # kalman filter update with observation
-                trk.kf.update(bbox3d)
+                trk.kf.update(pose)
                 trk.kf.x[3] = within_range(trk.kf.x[3])
                 trk.info = info[d, :][0]
+            else:
+                trk.upd_id = UPD_ID_LOOSE
 
     def birth(
         self, boxes: List[Box3D], info: np.ndarray, unmatched_detections: Sequence[int]
