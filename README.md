@@ -21,6 +21,9 @@ and `Target` classes as well as adding an *update ID* `upd_id` in the
 instrumentation fields. The instrumentation is constructed for observing (inquiry)
 purposes. It does not change the original objects beyond that purpose.
 
+The function of the instrumentation is checked in this repository and used in
+a separate evaluation code (package `eval-ab-3d-mot`).
+
 ## Usage
 
 The package contains a bare minimum for the tracker to function. The interface for
