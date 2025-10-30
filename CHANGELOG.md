@@ -1,6 +1,11 @@
+# 0.4.0
+
+  - Typehints in the arguments of the `Ab3dMot.birth` method.
+  - Edit the docstring of the `data_association` function. 
+
 # 0.3.0
 
-  - Smaller value of the spatial tolerance (1e-14) to better serve in evaluation.
+  - Smaller value of the spatial tolerance `1e-14` previously `1e-4` to better serve in evaluation.
 
 
 # 0.2.0

@@ -1,6 +1,6 @@
 [project]
 name = "pure-ab-3d-mot"
-version = "0.3.0"
+version = "0.4.0"
 description = "The gist of the AB3DMOT (a base-line of 3D multiple-object tracking)."
 readme = "README.md"
 authors = [
