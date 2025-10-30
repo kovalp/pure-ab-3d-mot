@@ -90,7 +90,12 @@ def data_association(
     dets:  a list of Box3D object
     trks:  a list of Box3D object
 
-    Returns 3 lists of matches, unmatched_dets and unmatched_trks, and total cost, and affinity matrix
+    Returns:
+        - matches,
+        - unmatched detections
+        - unmatched tracks
+        - total cost
+        - affinity matrix
     """
 
     # if there is no item in either row/col, skip the association and return all as unmatched
