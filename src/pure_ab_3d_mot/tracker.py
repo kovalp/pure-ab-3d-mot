@@ -8,7 +8,7 @@ from typing import Dict, List, Sequence, Tuple, Union
 import numpy as np
 
 from .box import Box3D
-from .clavia_conventions import UPD_ID_LOOSE, ANN_IDS
+from .clavia_conventions import ANN_IDS, UPD_ID_LOOSE
 from .dist_metrics import MetricKind
 from .matching import MatchingAlgorithm, data_association
 from .orientation_correction import orientation_correction, within_range

@@ -4,8 +4,8 @@ from pathlib import Path
 
 import numpy as np
 
-from pure_ab_3d_mot.str_const import DETS, INFO
 from pure_ab_3d_mot.clavia_conventions import ANN_IDS
+from pure_ab_3d_mot.str_const import DETS, INFO
 from pure_ab_3d_mot.tracker import Ab3DMot
 
 
