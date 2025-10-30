@@ -69,13 +69,13 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
                 trk.info[:] = info[det_idx[0], :]
 
     def birth(
-        self, boxes: List[Box3D], info: np.ndarray, unmatched_detections: Sequence[int]
+        self, det_boxes: List[Box3D], info: np.ndarray, unmatched_detections: Sequence[int]
     ) -> List[int]:
         # create and initialise new trackers for unmatched detections
 
         new_id_list = []  # new ID will be generated for unmatched detections
         for i in unmatched_detections:
-            box = boxes[i]
+            box = det_boxes[i]
             pose = Box3D.bbox2array(box)[:7]
             trk = Target(pose, info[i, :], self.ID_count[0])
             self.trackers.append(trk)
