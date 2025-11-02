@@ -2205,7 +2205,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "bump-my-version", marker = "python_full_version < '3.14'" },
+    { name = "bump-my-version" },
     { name = "pytest", version = "8.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
     { name = "pytest", version = "8.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
     { name = "pytest-cov", version = "5.0.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
@@ -2223,7 +2223,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "bump-my-version", marker = "python_full_version < '3.14'", specifier = ">=1.2.2" },
+    { name = "bump-my-version", specifier = ">=1.2.2" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "pytest-cov", specifier = ">=5.0.0" },
     { name = "ruff", specifier = ">=0.13.0" },
