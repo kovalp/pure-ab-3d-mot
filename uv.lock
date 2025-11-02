@@ -59,6 +59,15 @@ wheels = [
 ]
 
 [[package]]
+name = "association-quality-clavia"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/36/06/29a5d9dd5efee5872bc17465c2ccad7e197c68d477cf88b97c41940c5f8b/association_quality_clavia-0.1.0.tar.gz", hash = "sha256:4b4f887a06172b6a6f442eb26dc30e3a06efc0752b5d5a1175452702e35111e8", size = 76152, upload-time = "2025-11-02T16:07:03.524Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/79/dc/f790c8b73123e50ab0cf4976537456b569ee2f20d821697b6d87c40bd124/association_quality_clavia-0.1.0-py3-none-any.whl", hash = "sha256:41a3a66c88f775a1a815b677364de6314244405dfbbc43215c2f21e2511a29fe", size = 4489, upload-time = "2025-11-02T16:07:01.043Z" },
+]
+
+[[package]]
 name = "bracex"
 version = "2.5.post1"
 source = { registry = "https://pypi.org/simple" }
@@ -2184,6 +2193,7 @@ name = "pure-ab-3d-mot"
 version = "1.0.0"
 source = { editable = "." }
 dependencies = [
+    { name = "association-quality-clavia" },
     { name = "filterpy" },
     { name = "scipy", version = "1.10.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
     { name = "scipy", version = "1.13.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.9.*'" },
@@ -2205,6 +2215,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "association-quality-clavia", specifier = ">=0.1.0" },
     { name = "filterpy", specifier = ">=1.4.5" },
     { name = "scipy", specifier = ">=1.10.1" },
     { name = "scipy-stubs", marker = "python_full_version >= '3.10'", specifier = ">=1.14.1.3" },

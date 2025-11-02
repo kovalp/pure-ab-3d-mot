@@ -3,7 +3,8 @@
 import numpy as np
 import pytest
 
-from pure_ab_3d_mot.clavia_conventions import ANN_ID_UNKNOWN
+from association_quality_clavia import ANN_ID_ABSENT
+
 from pure_ab_3d_mot.process_dets import process_dets
 
 
@@ -19,7 +20,7 @@ def test_without_annotation_ids() -> None:
     assert boxes[0].y == pytest.approx(5.0)
     assert boxes[0].z == pytest.approx(6.0)
     assert boxes[0].ry == pytest.approx(7.0)
-    assert boxes[0].ann_id == ANN_ID_UNKNOWN
+    assert boxes[0].ann_id == ANN_ID_ABSENT
 
     assert boxes[1].h == pytest.approx(8.0)
     assert boxes[1].w == pytest.approx(9.0)
@@ -28,7 +29,7 @@ def test_without_annotation_ids() -> None:
     assert boxes[1].y == pytest.approx(12.0)
     assert boxes[1].z == pytest.approx(13.0)
     assert boxes[1].ry == pytest.approx(14.0)
-    assert boxes[1].ann_id == ANN_ID_UNKNOWN
+    assert boxes[1].ann_id == ANN_ID_ABSENT
 
 
 def test_with_annotation_ids() -> None:

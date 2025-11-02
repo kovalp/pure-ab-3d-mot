@@ -7,13 +7,14 @@ from typing import Dict, List, Sequence, Tuple, Union
 
 import numpy as np
 
+from association_quality_clavia import UPD_ID_LOOSE
+
 from .box import Box3D
-from .clavia_conventions import ANN_IDS, UPD_ID_LOOSE
 from .dist_metrics import MetricKind
 from .matching import MatchingAlgorithm, data_association
 from .orientation_correction import orientation_correction, within_range
 from .process_dets import process_dets
-from .str_const import DETS, INFO
+from .str_const import ANN_IDS, DETS, INFO
 from .target import Target
 
 
