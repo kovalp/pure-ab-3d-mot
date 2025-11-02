@@ -3,8 +3,9 @@
 import numpy as np
 import pytest
 
+from association_quality_clavia import ANN_ID_ABSENT
+
 from pure_ab_3d_mot.box import Box3D, box2corners3d_camcoord
-from pure_ab_3d_mot.clavia_conventions import ANN_ID_UNKNOWN
 
 
 @pytest.fixture
@@ -18,7 +19,7 @@ def test_repr(box: Box3D) -> None:
 
 def test_basics(box: Box3D) -> None:
     assert box.s == pytest.approx(0.789)
-    assert box.ann_id == ANN_ID_UNKNOWN
+    assert box.ann_id == ANN_ID_ABSENT
 
 
 def test_to_dict(box: Box3D) -> None:

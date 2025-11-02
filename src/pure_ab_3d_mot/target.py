@@ -2,16 +2,15 @@
 
 import numpy as np
 
+from association_quality_clavia import ANN_ID_ABSENT
 from filterpy.kalman import KalmanFilter
-
-from .clavia_conventions import ANN_ID_UNKNOWN
 
 
 class Target:
     """."""
 
     def __init__(
-        self, pose: np.ndarray, info: np.ndarray, track_id: int, *, ann_id: int = ANN_ID_UNKNOWN
+        self, pose: np.ndarray, info: np.ndarray, track_id: int, *, ann_id: int = ANN_ID_ABSENT
     ) -> None:
         self.ann_id = ann_id
         self.upd_id = ann_id

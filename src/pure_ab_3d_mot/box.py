@@ -4,7 +4,8 @@ from typing import Sequence
 
 import numpy as np
 
-from .clavia_conventions import ANN_ID_UNKNOWN
+from association_quality_clavia import ANN_ID_ABSENT
+
 from .kitti_oxts import roty
 
 
@@ -20,7 +21,7 @@ class Box3D:
         ry=None,
         s=None,
         *,
-        ann_id: int = ANN_ID_UNKNOWN,
+        ann_id: int = ANN_ID_ABSENT,
     ) -> None:
         self.x = x  # center x
         self.y = y  # center y

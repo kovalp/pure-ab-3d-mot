@@ -5,8 +5,9 @@ from typing import List
 import numpy as np
 import pytest
 
+from association_quality_clavia import UPD_ID_LOOSE
+
 from pure_ab_3d_mot.box import Box3D
-from pure_ab_3d_mot.clavia_conventions import UPD_ID_LOOSE
 from pure_ab_3d_mot.tracker import Ab3DMot
 
 

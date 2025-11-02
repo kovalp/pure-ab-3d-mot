@@ -5,7 +5,8 @@ from typing import Dict
 import numpy as np
 import pytest
 
-from pure_ab_3d_mot.clavia_conventions import ANN_ID_UNKNOWN
+from association_quality_clavia import ANN_ID_ABSENT
+
 from pure_ab_3d_mot.target import Target
 from pure_ab_3d_mot.tracker import Ab3DMot
 
@@ -21,7 +22,7 @@ def test_first_det(tracker: Ab3DMot, det_reports1: Dict) -> None:
     assert len(tracker.trackers) == 1
     assert isinstance(tracker.trackers[0], Target)
     target = tracker.trackers[0]
-    assert target.ann_id == ANN_ID_UNKNOWN
+    assert target.ann_id == ANN_ID_ABSENT
     assert target.id == 1
     assert target.info == pytest.approx([1.1, 2.1, 3.1, 4.1, 5.1])
     assert target.hits == 1

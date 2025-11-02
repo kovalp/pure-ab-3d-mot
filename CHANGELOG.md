@@ -1,3 +1,11 @@
+# 2.0.0
+
+  - Implement ClavIA using the `association-quality-clavia` package.
+
+# 1.0.0
+
+  - First version including the classification via instrumented association (ClavIA).
+
 # 0.5.0
 
   - Various improvements in the `Ab3dMot.update` method.
