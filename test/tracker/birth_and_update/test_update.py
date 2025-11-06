@@ -20,11 +20,14 @@ def test_with_match(trk_t2: Ab3DMot, boxes: List[Box3D], info: np.ndarray) -> No
            0.6944006678554734, 5.909090909090909, 5.090909090909091,
            4.2727272727272725, 0.0, 0.0, 0.0]
     # fmt: on
-    assert trk_t2.trackers[0].kf.x[:, 0] == pytest.approx(ref)
-    assert trk_t2.trackers[0].time_since_update == 0
-    assert trk_t2.trackers[0].hits == 2
-    assert trk_t2.trackers[0].ann_id == 234
-    assert trk_t2.trackers[0].upd_id == 123
+    target = trk_t2.trackers[0]
+    assert target.kf.x[:, 0] == pytest.approx(ref)
+    assert target.time_since_update == 0
+    assert target.hits == 2
+    assert target.ann_id == 234
+    assert target.upd_id == 123
+    assert isinstance(target.ann_id, int)
+    assert isinstance(target.upd_id, int)
 
 
 def test_no_match(trk_t2: Ab3DMot, boxes: List[Box3D], info: np.ndarray) -> None:
@@ -32,8 +35,11 @@ def test_no_match(trk_t2: Ab3DMot, boxes: List[Box3D], info: np.ndarray) -> None
     trk_t2.update(matches, [0], boxes, info)
     assert len(trk_t2.trackers) == 1
     ref = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 0.0, 0.0, 0.0]
-    assert trk_t2.trackers[0].kf.x[:, 0] == pytest.approx(ref)
-    assert trk_t2.trackers[0].time_since_update == 2
-    assert trk_t2.trackers[0].hits == 1
-    assert trk_t2.trackers[0].ann_id == 234
-    assert trk_t2.trackers[0].upd_id == UPD_ID_LOOSE
+    target = trk_t2.trackers[0]
+    assert target.kf.x[:, 0] == pytest.approx(ref)
+    assert target.time_since_update == 2
+    assert target.hits == 1
+    assert target.ann_id == 234
+    assert target.upd_id == UPD_ID_LOOSE
+    assert isinstance(target.ann_id, int)
+    assert isinstance(target.upd_id, int)

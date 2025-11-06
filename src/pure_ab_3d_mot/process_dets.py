@@ -19,7 +19,7 @@ def process_dets(dets: Sequence[float], ann_ids: Sequence[int]) -> List[Box3D]:
     for i, det in enumerate(dets):
         box = Box3D.from_kitti(det)
         if len(ann_ids) > 0:
-            box.ann_id = ann_ids[i]
+            box.ann_id = int(ann_ids[i])
         boxes.append(box)
 
     return boxes
