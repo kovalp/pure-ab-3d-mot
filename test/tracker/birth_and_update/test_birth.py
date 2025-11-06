@@ -16,4 +16,7 @@ def test_no_unmatched_det(tracker: Ab3DMot, boxes: List[Box3D], info: np.ndarray
 def test_1_unmatched_det(tracker: Ab3DMot, boxes: List[Box3D], info: np.ndarray) -> None:
     tracker.birth(boxes, info, [0])
     assert len(tracker.trackers) == 1
-    assert tracker.trackers[0].ann_id == 123
+    target = tracker.trackers[0]
+    assert target.ann_id == 123
+    assert isinstance(target.ann_id, int)
+    assert isinstance(target.upd_id, int)
