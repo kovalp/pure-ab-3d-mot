@@ -1,3 +1,8 @@
+# 2.1.0
+
+  - Ensure integer ClavIA ids, not numpy.int64 for example.
+  - Use `association-quality-clavia==0.2.0` which is more debug friendly.
+
 # 2.0.0
 
   - Implement ClavIA using the `association-quality-clavia` package.
