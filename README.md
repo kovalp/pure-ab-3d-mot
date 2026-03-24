@@ -22,7 +22,7 @@ used in a separate evaluation code (package `eval-ab-3d-mot`).
 ## Usage
 
 The package contains a bare minimum for the tracker to function. The interface for
-using the tracker in evaluation is done in separate repos (see `eval-ab-3d-mot`).
+using the tracker in evaluation is done elsewhere [`eval-ab-3d-mot`](https://github.com/kovalp/eval-ab-3d-mot).
 
 ## Install
 
