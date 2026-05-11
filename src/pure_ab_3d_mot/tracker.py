@@ -35,6 +35,9 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
         self.max_age = 2
         self.min_sim = -1.0
         self.max_sim = 1.0
+        self.measurement_std_dev: float = 1.0
+        self.proc_std_dev: float = 1.0
+        self.proc_vel_std_dev: float = 0.1
 
     def update(
         self,
@@ -83,6 +86,9 @@ class Ab3DMot(object):  # A Baseline of 3D Multi-Object Tracking
             box = det_boxes[i]
             pose = Box3D.bbox2array(box)[:7]
             trk = Target(pose, info[i, :], self.ID_count[0], ann_id=box.ann_id)
+            trk.set_measurement_std_dev(self.measurement_std_dev)
+            trk.set_proc_std_dev(self.proc_std_dev)
+            trk.set_proc_vel_std_dev(self.proc_vel_std_dev)
             self.trackers.append(trk)
             new_id_list.append(trk.id)
             self.ID_count[0] += 1

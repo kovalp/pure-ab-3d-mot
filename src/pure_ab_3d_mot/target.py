@@ -77,5 +77,13 @@ class Target:
 
     def get_velocity(self) -> np.ndarray:
         # return the object velocity in the state
-
         return self.kf.x[7:]
+
+    def set_measurement_std_dev(self, measurement_std_dev: float) -> None:
+        self.kf.R = measurement_std_dev**2 * np.eye(7)
+
+    def set_proc_std_dev(self, std_dev: float) -> None:
+        self.kf.Q = std_dev**2 * np.eye(10)
+
+    def set_proc_vel_std_dev(self, vel_std_dev: float) -> None:
+        self.kf.Q[7:, 7:] = vel_std_dev**2 * np.eye(3)
