@@ -18,6 +18,11 @@ def test_target_init(target: Target) -> None:
     assert target.initial_pose == pytest.approx(np.array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7]))
     assert target.time_since_update == 0
     assert target.hits == 1
+    assert target.kf.R == pytest.approx(np.eye(7))
+    assert target.kf.Q[:7, :7] == pytest.approx(np.eye(7))
+    assert target.kf.Q[7:, 7:] == pytest.approx(0.01 * np.eye(3))
+    assert target.kf.Q[7:, :7] == pytest.approx(0.0)
+    assert target.kf.Q[:7, 7:] == pytest.approx(0.0)
 
 
 def test_target_repr(target: Target) -> None:
