@@ -1,3 +1,8 @@
+# 2.2.0
+
+  - Add a constraint on NumPy versions.
+  - Add the attributes to control the standard deviations of Kalman covariance matrices.
+
 # 2.1.0
 
   - Ensure integer ClavIA ids, not numpy.int64 for example.
